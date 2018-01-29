@@ -76,6 +76,34 @@ describe("InsightFacade Add/Remove Dataset", function () {
         }
     });
 
+    // it("try Q1", async () => {
+    //     describe("Dynamic InsightFacade PerformQuery tests", () => {
+    //         const testQueries: ITestQuery[] = [];
+    //         for (const test of testQueries) {
+    //             it(`[${test.filename}] ${test.title}`, async () => {
+    //                 let response: InsightResponse;
+    //
+    //                 try {
+    //                     response = await insightFacade.performQuery(test.query);
+    //                 } catch (err) {
+    //                     response = err;
+    //                 } finally {
+    //                     expect(response.code).to.equal(test.response.code);
+    //
+    //                     if (test.response.code >= 400) {
+    //                         expect(response.body).to.have.property("error");
+    //                     } else {
+    //                         expect(response.body).to.have.property("result");
+    //                         const expectedResult = (test.response.body as InsightResponseSuccessBody).result;
+    //                         const actualResult = (response.body as InsightResponseSuccessBody).result;
+    //                         expect(actualResult).to.deep.equal(expectedResult);
+    //                     }
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
+
     // This is an example of a pending test. Add a callback function to make the test run.
     it("Should remove the courses dataset");
 });
