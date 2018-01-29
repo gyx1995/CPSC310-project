@@ -24,7 +24,6 @@ export default class InsightFacade implements IInsightFacade {
     public removeDataset(id: string): Promise<InsightResponse> {
         return Promise.reject({code: -1, body: null});
     }
-
     public performQuery(query: any): Promise <InsightResponse> {
         // return new Promise(function (fulfill, reject) {
         //     try {
