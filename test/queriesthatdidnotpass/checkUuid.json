@@ -1,0 +1,35 @@
+
+{
+    "title": "checking the uuid(string)",
+    "query":{
+        "WHERE": {
+            "AND": [
+                {
+                    "GT": {
+                        "courses_avg": 97
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_uuid": "73173"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {
+            "result": [
+                {"courses_dept":"math","courses_avg":97.09,"courses_uuid":"73173"}]
+        }
+    }
+}

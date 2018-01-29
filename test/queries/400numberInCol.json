@@ -1,0 +1,24 @@
+{
+    "title":"add number in column ",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg":97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                1111,
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {"error":"OK"}
+    }
+}
+

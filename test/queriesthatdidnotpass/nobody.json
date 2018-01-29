@@ -1,0 +1,17 @@
+{
+    "title": "checking the query without body",
+    "query": {
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {"error":"Query format is wrong"}
+    }
+}
