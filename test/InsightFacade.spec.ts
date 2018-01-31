@@ -203,6 +203,20 @@ describe("InsightFacade Add/Remove Dataset", function () {
             expect(response.code).to.equal(expectedCode);
         }
     });
+
+    it("Should add a valid dataset", async () => {
+        const id: string = "courses";
+        const expectedCode: number = 204;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+        }
+    });
 });
 
 // This test suite dynamically generates tests from the JSON files in test/queries.
@@ -213,7 +227,7 @@ describe("InsightFacade PerformQuery", () => {
     };
     let insightFacade: InsightFacade;
     let testQueries: ITestQuery[] = [];
-
+    Log.trace("hi");
     // Create a new instance of InsightFacade, read in the test queries from test/queries and
     // add the datasets specified in datasetsToQuery.
     before(async function () {

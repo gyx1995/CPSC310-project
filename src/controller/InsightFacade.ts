@@ -16,15 +16,23 @@ export default class InsightFacade implements IInsightFacade {
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
     }
-
+    public getDataset(id: string): any {
+        // const that = this;
+        Log.trace("1000");
+        Log.trace(this.dataset["courses"][0].courses_avg);
+        Log.trace("hi");
+        return this.dataset[id];
+    }
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<InsightResponse> {
         return new Promise<InsightResponse>((resolve, reject) => {
-            this.unzip(content, id).then(() => {
-                Log.trace("true");
-                resolve({code: 204, body: null});
-            }).catch(() => {
-                Log.trace("false");
-                reject({code: 400, body: null});
+            this.unzip(content, id).then((ok) => {
+                if (ok) {
+                    Log.trace("1");
+                    resolve({code: 204, body: null});
+                } else {
+                    Log.trace("2");
+                    reject({code: 400, body: null});
+                }
             });
         });
     }
@@ -46,53 +54,25 @@ export default class InsightFacade implements IInsightFacade {
         });
     }
     public performQuery(query: any): Promise <InsightResponse> {
-        // return new Promise(function (fulfill, reject) {
-        //     try {
-        //         const isValid = InsightFacade.doQurey.isValid(query);
-        //
-        //         if (isValid === true) {
-        //             InsightFacade.doQurey.query(query)
-        //                  .then(function(result) {
-        //                 fulfill({code: 200, body: result});
-        //             }).catch(function (err)  {
-        //                 Log.trace("in InsightFacade: ");
-        //                 if (err) {Log.trace(err); }
-        //                 if ("missing" in err) {
-        //                     reject({code: 424, body: { error: err}});
-        //                 } else {
-        //                     reject({code: 400, body: {error: "invalid query"}});
-        //                 }
-        //             });
-        //
-        //         } else {
-        //             reject({code:400, body:{error: "invalid query'"}});
-        //         }
-        //     } catch (err) {
-        //         Log.error("RouteHandler::postQuery(..) - ERROR: " + err);
-        //         reject({code:403, body:{error: err.message}});
-        //     }
-        // });
         return new Promise(function (fulfill, reject) {
             try {const isValid = InsightFacade.doQuery.isValid(query);
                  if (isValid === 200) {
                     InsightFacade.doQuery.query(query).then(function (result) {
                         Log.trace("valid");
-                        fulfill({code: 200, body: {result: [result]}});
+                        fulfill({code: 200, body: {result}});
                     }).catch(function (err) {
                          reject({code: 400, body: {error: err}});
                      });
                  } else {
-                     if (isValid === 400) {
-                    reject({code: 400, body: {error: "invalid query"}});
-                     } else {
-                         reject({code: 400, body: {error: "invalid not 400 query"}});
-                     }
+                     Log.trace(" else invalid");
+                     reject({code: 400, body: {error: "invalid 400 query"}});
                  }
             } catch (err) {
                 Log.error("Query - ERROR: " + err);
                 reject({code: 400, body: {error: err.message}});
             }
-    });
+            // reject({code: 400, body: {error: ""}});
+        });
     }
 
     public listDatasets(): Promise<InsightResponse> {

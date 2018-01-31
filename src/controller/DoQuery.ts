@@ -1,3 +1,4 @@
+import fs = require("fs");
 import {isNumber, isString} from "util";
 import Log from "../Util";
 import InsightFacade from "./InsightFacade";
@@ -8,7 +9,10 @@ export interface IQueryRequest {
 
 export default class DoQuery {
     // private datasets: Datasets = null;
-    private courseName: any = {};
+    // private data: any = fs.readFileSync("./test/data/courses", "utf8");
+    // private array = JSON.parse(this.data);
+//    private courseName: any = {};
+    private insightFacade: InsightFacade;
     private coursekey: any = ["courses_dept", "courses_id"
                             , "courses_avg", "courses_instructor"
                             , "courses_title" , "courses_pass"
@@ -157,14 +161,37 @@ export default class DoQuery {
             return 200;
         }
     }
-    public filter(query: any): Promise<any> {
-        return new Promise(function (fulfill, reject) {
-            fulfill("not finished");
-        });
+    public filter(where: any): any {
+        const data: any = fs.readFileSync("./test/data/courses", "utf8");
+        const arr = JSON.parse(data);
+        Log.trace(arr.length);
+        this.insightFacade = new InsightFacade();
+        Log.trace("111");
+        const re: any = [];
+        const key = Object.keys(where["GT"])[0];
+        const v = where["GT"][key];
+        Log.trace(key);
+        // const data: any[] = this.insightFacade.getDataset("courses");
+        Log.trace(arr.length.toString());
+        for (const d of arr) {
+            // Log.trace(d[key]);
+            if (d[key] > v) {
+                re.push(d);
+            }
+        }
+        // Log.trace(re.length);
+        // for (const d of re) {
+        //     Log.trace(d[key]);
+        // }
+        Log.trace("inside filter done");
+        return re;
     }
     public select(result: any, option: any): Promise<any> {
+        Log.trace("333");
         return new Promise(function (fulfill, reject) {
             const col = option["COLUMNS"];
+            Log.trace(col.length);
+
             const final: any = [];
             for (const r of result) {
                 const o: any = {};
@@ -174,10 +201,13 @@ export default class DoQuery {
                 }
                 final.push(o);
             }
+            Log.trace(final[0]["courses_avg"]);
             const order = option["ORDER"];
             final.sort(function (a: any, b: any) {
                 return a[order] - b[order];
             });
+            Log.trace("after sort");
+            Log.trace(Object.keys(final[0])[0]);
             fulfill(final);
         });
     }
@@ -186,15 +216,31 @@ export default class DoQuery {
         const that: any = this;
         return new Promise(function (fulfill, reject) {
             const where = query["WHERE"];
-            that.filter(where).then(function (result: any) {
-                that.select(result, query["OPTIONS"]).then(function (result2: any ) {
-                    fulfill(result2);
-                }).catch(function (err2: any ) {
-                    reject(err2);
-                });
-            }).catch(function (err: any) {
-                reject(err);
-            });
+            // for (const d of result) {
+            //     Log.trace(d["courses_avg"]);
+            // }
+            //////////////////////////////
+            const result: any = that.filter(where);
+            Log.trace("after filter and select start");
+            const options: any = query["OPTIONS"];
+            Log.trace(options["COLUMNS"][1]);
+            const finalresult: any = that.select(result, options);
+            Log.trace("after select");
+            fulfill(finalresult);
+            ///////////////////////////
+            // that.filter(where).then(function (result: any) {
+            //     Log.trace("filter done");
+            //     that.select(result, query["OPTIONS"])
+            //         .then(function (result2: any ) {
+            //         Log.trace(result2.length.toString());
+            //         fulfill(result2);
+            //     }).catch(function (err2: any ) {
+            //         Log.trace("555");
+            //         reject(err2);
+            //     });
+            // }).catch(function (err: any) {
+            //     reject(err);
+            // });
         });
     }
 }
