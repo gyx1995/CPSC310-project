@@ -2,6 +2,7 @@ import JSZip = require("jszip");
 import DoQuery from "../controller/DoQuery";
 import Log from "../Util";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} from "./IInsightFacade";
+import {error} from "util";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -54,17 +55,22 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             try {const isValid = InsightFacade.doQuery.isValid(query);
                  if (isValid === 200) {
-                    Log.trace("valid");
+                    InsightFacade.doQuery.query(query).then(function (result) {
+                        Log.trace("valid");
+                        fulfill({code: 200, body: {result: [result]}});
+                    }).catch(function (err) {
+                         reject({code: 400, body: {error: err}});
+                     });
                  } else {
                      if (isValid === 400) {
                     reject({code: 400, body: {error: "invalid query"}});
                      } else {
-                         reject({code: 402, body: {error: "invalid query"}});
+                         reject({code: 400, body: {error: "invalid not 400 query"}});
                      }
                  }
             } catch (err) {
                 Log.error("Query - ERROR: " + err);
-                reject({code: 403, body: {error: err.message}});
+                reject({code: 400, body: {error: err.message}});
             }
     });
     }

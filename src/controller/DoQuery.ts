@@ -1,9 +1,11 @@
 import {isNumber, isString} from "util";
 import Log from "../Util";
+import InsightFacade from "./InsightFacade";
 export interface IQueryRequest {
     WHERE: {};
     OPTIONS: {};
 }
+
 export default class DoQuery {
     // private datasets: Datasets = null;
     private courseName: any = {};
@@ -155,8 +157,44 @@ export default class DoQuery {
             return 200;
         }
     }
+    public filter(query: any): Promise<any> {
+        return new Promise(function (fulfill, reject) {
+            fulfill("not finished");
+        });
+    }
+    public select(result: any, option: any): Promise<any> {
+        return new Promise(function (fulfill, reject) {
+            const col = option["COLUMNS"];
+            const final: any = [];
+            for (const r of result) {
+                const o: any = {};
+                // for every columns, add key-value to o.
+                for (const c of col ) {
+                    o[c] = r[c];
+                }
+                final.push(o);
+            }
+            const order = option["ORDER"];
+            final.sort(function (a: any, b: any) {
+                return a[order] - b[order];
+            });
+            fulfill(final);
+        });
+    }
+
     public query(query: IQueryRequest): Promise<any> {
-        Log.trace("QueryController::query( " + JSON.stringify(query) + ")" );
-        return Promise.reject({code: -1, body: null});
+        const that: any = this;
+        return new Promise(function (fulfill, reject) {
+            const where = query["WHERE"];
+            that.filter(where).then(function (result: any) {
+                that.select(result, query["OPTIONS"]).then(function (result2: any ) {
+                    fulfill(result2);
+                }).catch(function (err2: any ) {
+                    reject(err2);
+                });
+            }).catch(function (err: any) {
+                reject(err);
+            });
+        });
     }
 }
