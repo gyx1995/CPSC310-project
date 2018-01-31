@@ -1,29 +1,49 @@
+import fs = require("fs");
 import JSZip = require("jszip");
 import DoQuery from "../controller/DoQuery";
 import Log from "../Util";
+import {Icourses} from "./courses";
+import {Idatasets} from "./dataset";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} from "./IInsightFacade";
-import {error} from "util";
 
 /**
  * This is the main programmatic entry point for the project.
  */
 export default class InsightFacade implements IInsightFacade {
     private static doQuery = new DoQuery();
+    private dataset: Idatasets = {};
+
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<InsightResponse> {
-       //  const p = unzip(content);
-       // // Log.trace("here");
-       //  if (p) {
-       //      return Promise.resolve({code: 204, body: null});
-       //  }
-        return Promise.reject({code: 404, body: null});
+        return new Promise<InsightResponse>((resolve, reject) => {
+            this.unzip(content, id).then(() => {
+                Log.trace("true");
+                resolve({code: 204, body: null});
+            }).catch(() => {
+                Log.trace("false");
+                reject({code: 400, body: null});
+            });
+        });
     }
-
     public removeDataset(id: string): Promise<InsightResponse> {
-        return Promise.reject({code: -1, body: null});
+        Log.trace("start remove");
+        this.deleteArray(id);
+        Log.trace("array cleared");
+        return new Promise(function (resolve, reject) {
+            Log.trace("promise");
+            fs.unlink("./test/data/" + id, (err) => {
+                if (err) {
+                    reject({code: 404, body: null});
+                    Log.trace("data no found");
+                } else {
+                    resolve({code: 204, body: null});
+                    Log.trace("delete successfully");
+                }
+            });
+        });
     }
     public performQuery(query: any): Promise <InsightResponse> {
         // return new Promise(function (fulfill, reject) {
@@ -78,54 +98,85 @@ export default class InsightFacade implements IInsightFacade {
     public listDatasets(): Promise<InsightResponse> {
         return Promise.reject({code: -1, body: null});
     }
-}
 
-// function unzip(content: string): Promise<boolean> {
-//     const myZip = new JSZip();
-//     let jsonFile: any;
-//     const list: string[] = [] ;
-//     return myZip.loadAsync(content, {base64: true})
-//         .then(function (zip: JSZip) {
-//             // Log.trace(zip.toString());
-//             zip.forEach(function (path, file) {
-//                 file.async("text")
-//                     .then(function (fileData) {
-//                         // Log.trace(path);
-//                        // Log.trace(fileData);
-//                         try {
-//                             jsonFile = JSON.parse(fileData);
-//                             const re = jsonFile["result"];
-//                             for ( const element of re) {
-//                                 const title = element["Title"];
-//                                 list.push("title:");
-//                                 list.push(title);
-//                                 Log.trace(list);
-//                             }
-//                             // Log.trace(jsonFile.result.toString().split(",");
-//                         } catch (err) {
-//                             // Log.trace(path);
-//                             throw err;
-//                         }
-//                         // jsonFile.async("text")
-//                         //     .then(function () {
-//                         //        // Log.trace(jsonFile.result["Title"]);
-//                         //     });
-//                         // if (jsonFile !== undefined && jsonFile.result === undefined) {
-//                         //     Log.trace("valid JSON but no results");
-//                         //     throw {message: "invalid dataset"};
-//                         // }
-//                         // if (jsonFile !== undefined) {
-//                         //     list.push("courses_title:");
-//                         //     list.push(jsonFile.Title);
-//                         // }
-//                     });
-//                 // Log.trace(jsonFile.result);
-//                 // Log.trace(path);
-//             });
-//             return true;
-//         })
-//         .catch(function (err: Error) {
-//             Log.trace("invalid zip file format");
-//             return false;
-//         });
-// }
+    private deleteArray(id: string) {
+        delete this.dataset[id];
+    }
+    private unzip(content: string, id: string): Promise<boolean> {
+        const myZip = new JSZip();
+        let jsonFile: any;
+        const that = this;
+        return myZip.loadAsync(content, {base64: true})
+            .then(function (zip: JSZip) {
+                // Log.trace(zip.toString());
+                const parray = Array() as any[];
+                const array = Array() as any[];
+                zip.forEach(function (path, file) {
+                    const p = file.async("text")
+                        .then(function (fileData) {
+                            // Log.trace(path);
+                            // Log.trace(fileData);
+                            try {
+                                jsonFile = JSON.parse(fileData);
+                                // Log.trace(jsonFile);
+                                // Log.trace(jsonFile.result.toString().split(",");
+                                for (const element of jsonFile.result) {
+                                    const c: Icourses = {
+                                        courses_dept: "", courses_id: "",
+                                        courses_avg: 0, courses_instructor: "",
+                                        courses_title: "", courses_pass: 0, courses_fail: 0,
+                                        courses_audit: 0, courses_uuid: "",
+                                    };
+                                    c.courses_dept = element["Subject"];
+                                    c.courses_id = element["Course"];
+                                    c.courses_avg = element["Avg"];
+                                    c.courses_instructor = element["Professor"];
+                                    c.courses_title = element["Title"];
+                                    c.courses_pass = element["Pass"];
+                                    c.courses_fail = element["Fail"];
+                                    c.courses_audit = element["Audit"];
+                                    c.courses_uuid = element["id"];
+                                    if (c.courses_dept !== undefined &&
+                                        c.courses_id !== undefined &&
+                                        c.courses_avg !== undefined &&
+                                        c.courses_instructor !== undefined &&
+                                        c.courses_title !== undefined &&
+                                        c.courses_pass !== undefined &&
+                                        c.courses_fail !== undefined &&
+                                        c.courses_audit !== undefined &&
+                                        c.courses_uuid !== undefined) {
+                                        array.push(c);
+                                    }
+                                }
+                            } catch (err) {
+                                Log.trace(err);
+                                return false;
+                            }
+                        });
+                    parray.push(p);
+                });
+                return Promise.all(parray)
+                    .then(function () {
+                        if (fs.existsSync("./test/data/" + id)) {
+                            Log.trace("exist");
+                            return false;
+                        }
+                        Log.trace("start writing");
+                        Log.trace(array.length.toString());
+                        fs.writeFileSync("./test/data/" + id, JSON.stringify(array));
+                        that.dataset[id] = array;
+                        Log.trace(that.dataset["courses"][0].courses_avg);
+                        Log.trace("file wrote");
+                        return true;
+                    }).catch(function (err: Error) {
+                        Log.error(err.message);
+                        return false;
+                    });
+                // return true;
+            })
+            .catch(function (err: Error) {
+                Log.trace("invalid zip file format");
+                return false;
+            });
+    }
+}
