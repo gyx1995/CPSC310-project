@@ -9,8 +9,8 @@ export interface IQueryRequest {
 
 export default class DoQuery {
     // private datasets: Datasets = null;
-    // private data: any = fs.readFileSync("./test/data/courses", "utf8");
-    // private array = JSON.parse(this.data);
+    private data: any = fs.readFileSync("./test/data/courses", "utf8");
+    private array = JSON.parse(this.data);
 //    private courseName: any = {};
     private insightFacade: InsightFacade;
     private coursekey: any = ["courses_dept", "courses_id"
@@ -58,7 +58,7 @@ export default class DoQuery {
             }
         }
         if (columns.indexOf(order) === -1) {
-            Log.trace("false");
+            Log.trace("order key is wrong");
             return 400;
         }
         return 200;
@@ -68,7 +68,17 @@ export default class DoQuery {
             Log.trace("1");
             return 400;
         } else {
-            if ("AND" in cond) {
+            if ("NOT" in cond) {
+                const not = cond["NOT"];
+                if (not.length === 0 ) {
+                    Log.trace("notNOCondFalse");
+                    return 400;
+                } else {
+                    Log.trace("check not");
+                    this.condValid(not);
+                    Log.trace("check not finished");
+                }
+            } else if ("AND" in cond) {
                 const and = cond["AND"];
                 if (and.length === 0 ) {
                     Log.trace("andNOCondFalse");
@@ -162,29 +172,163 @@ export default class DoQuery {
         }
     }
     public filter(where: any): any {
-        const data: any = fs.readFileSync("./test/data/courses", "utf8");
-        const arr = JSON.parse(data);
+        const arr = this.array;
+        const ans: any = [];
+        for (let i = 0; i < arr.length; i++) {
+            ans[i] = 0;
+        }
         Log.trace(arr.length);
         this.insightFacade = new InsightFacade();
         Log.trace("111");
         const re: any = [];
-        const key = Object.keys(where["GT"])[0];
-        const v = where["GT"][key];
-        Log.trace(key);
-        // const data: any[] = this.insightFacade.getDataset("courses");
-        Log.trace(arr.length.toString());
-        for (const d of arr) {
-            // Log.trace(d[key]);
-            if (d[key] > v) {
-                re.push(d);
+        if ("GT" in where) {
+            const key = Object.keys(where["GT"])[0];
+            const v = where["GT"][key];
+            // for (const d of arr) {
+            //     // Log.trace(d[key]);
+            //     if (d[key] > v) {
+            //         re.push(d);
+            //     }
+            // }
+            for (let i = 0; i < arr.length; i ++) {
+                // Log.trace(d[key]);
+                if (arr[i][key] > v) {
+                    ans[i] = 1;
+                } else {
+                    ans[i] = 0;
+                }
+            }
+            // for (let i = 0; i < arr.length; i++) {
+            //     if (ans[i]) {
+            //         re.push(arr[i]);
+            //     }
+            // }
+        }
+        if ("LT" in where) {
+            const key = Object.keys(where["LT"])[0];
+            const v = where["LT"][key];
+            // for (const d of arr) {
+            //     // Log.trace(d[key]);
+            //     if (d[key] < v) {
+            //         re.push(d);
+            //     }
+            // }
+            for (let i = 0; i < arr.length; i ++) {
+                // Log.trace(d[key]);
+                if (arr[i][key] < v) {
+                    ans[i] = 1;
+                } else {
+                    ans[i] = 0;
+                }
             }
         }
+        if ("EQ" in where) {
+            const key = Object.keys(where["EQ"])[0];
+            const v = where["EQ"][key];
+            // for (const d of arr) {
+            //     // Log.trace(d[key]);
+            //     if (d[key] === v) {
+            //         re.push(d);
+            //     }
+            // }
+
+            for (let i = 0; i < arr.length; i ++) {
+                // Log.trace(d[key]);
+                if (arr[i][key] === v) {
+                    ans[i] = 1;
+                } else {
+                    ans[i] = 0;
+                }
+            }
+        }
+        if ("IS" in where) {
+            const key = Object.keys(where["IS"])[0];
+            const v = where["IS"][key];
+            Log.trace(v);
+            for (let i = 0; i < arr.length; i ++) {
+                // Log.trace(d[key]);
+                if (arr[i][key] === v) {
+                    ans[i] = 1;
+                } else {
+                    ans[i] = 0;
+                }
+            }
+        }
+        if ("OR" in where) {
+            // Log.trace("in or");
+            const or = where["OR"];
+            // Log.trace(or.length + " length");
+            const ff: any = this.filter(or[0]);
+            Log.trace(ff.length + " length");
+            for (const o of or) {
+                const rf: any = this.filter(o);
+                // Log.trace(rf.length + " rf length");
+                for (let i = 0; i < ff.length; i++) {
+                    if (rf[i] === 1) {
+                        ff[i] = 1;
+                    }
+                }
+            }
+            for (let i = 0; i < ff.length; i++) {
+                ans[i] = ff[i];
+            }
+        }
+        if ("AND" in where) {
+            Log.trace("in and");
+            const and = where["AND"];
+            Log.trace(and.length + "and  length");
+            const ff = this.filter(and[0]);
+            Log.trace(ff.length + " ff length");
+            for (const o of and) {
+                const rf: any = this.filter(o);
+                // Log.trace(rf.length + " rf length");
+                for (let i = 0; i < ff.length; i++) {
+                    if (rf[i] === 0) {
+                        ff[i] = 0;
+                    }
+                }
+            }
+            for (let i = 0; i < ff.length; i++) {
+                ans[i] = ff[i];
+            }
+            // for (let n = 1; n < and.length ; n++) {
+            //     const nf = this.filter(and[n]);
+            //     for (let e = 0; e < ff.length ; e++) {
+            //         if (nf.indexOf(ff[e]) === -1) {
+            //             Log.trace("for loop start");
+            //             const i = ff.indexOf(ff[e]);
+            //             ff.splice(i, 1);
+            //             e = e - 1;
+            //             Log.trace("for loop start2");
+            //         }
+            //     }
+            // }
+            // Log.trace("for loop done");
+            // Log.trace(ff.length + " rf length");
+            // for (const i of ff) {
+            //         re.push(i);
+            // }
+        }
+        if ("NOT" in where) {
+            Log.trace("in NOT");
+            const not = where["NOT"];
+            const rf = this.filter(not);
+            for (let i = 0; i < rf.length; i++) {
+                if (rf[i] === 1) {
+                    ans[i] = 0;
+                } else {
+                    ans[i] = 1;
+                }
+            }
+        }
+        // Log.trace(key);
+        // const data: any[] = this.insightFacade.getDataset("courses");
         // Log.trace(re.length);
         // for (const d of re) {
         //     Log.trace(d[key]);
         // }
         Log.trace("inside filter done");
-        return re;
+        return ans;
     }
     public select(result: any, option: any): Promise<any> {
         Log.trace("333");
@@ -214,6 +358,7 @@ export default class DoQuery {
 
     public query(query: IQueryRequest): Promise<any> {
         const that: any = this;
+        const re: any = [];
         return new Promise(function (fulfill, reject) {
             const where = query["WHERE"];
             // for (const d of result) {
@@ -221,11 +366,29 @@ export default class DoQuery {
             // }
             //////////////////////////////
             const result: any = that.filter(where);
+            let c = 0;
+            for (let i = 0; i < that.array.length; i++) {
+                if (result[i] === 1 ) {
+                    c += 1;
+                }
+            }
+            for (let i = 0; i < that.array.length; i++) {
+                if (result[i] === 1) {
+                    re.push(that.array[i]);
+                }
+            }
+            // for (let i = 0; i < arr.length; i++) {
+            //     if (ans[i]) {
+            //         re.push(arr[i]);
+            //     }
+            // }
             Log.trace("after filter and select start");
             const options: any = query["OPTIONS"];
-            Log.trace(options["COLUMNS"][1]);
-            const finalresult: any = that.select(result, options);
+            let finalresult: any = that.select(re, options);
             Log.trace("after select");
+            if (c === 0) {
+                finalresult = [];
+            }
             fulfill(finalresult);
             ///////////////////////////
             // that.filter(where).then(function (result: any) {

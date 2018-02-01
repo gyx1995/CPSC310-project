@@ -10,7 +10,7 @@ import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} fro
  * This is the main programmatic entry point for the project.
  */
 export default class InsightFacade implements IInsightFacade {
-    private static doQuery = new DoQuery();
+    // private static doQuery = new DoQuery();
     private dataset: Idatasets = {};
 
     constructor() {
@@ -27,10 +27,10 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise<InsightResponse>((resolve, reject) => {
             this.unzip(content, id).then((ok) => {
                 if (ok) {
-                    Log.trace("1");
+                    // Log.trace("1");
                     resolve({code: 204, body: null});
                 } else {
-                    Log.trace("2");
+                    // Log.trace("2");
                     reject({code: 400, body: null});
                 }
             });
@@ -54,10 +54,11 @@ export default class InsightFacade implements IInsightFacade {
         });
     }
     public performQuery(query: any): Promise <InsightResponse> {
+        const doQuery = new DoQuery();
         return new Promise(function (fulfill, reject) {
-            try {const isValid = InsightFacade.doQuery.isValid(query);
+            try {const isValid = doQuery.isValid(query);
                  if (isValid === 200) {
-                    InsightFacade.doQuery.query(query).then(function (result) {
+                    doQuery.query(query).then(function (result) {
                         Log.trace("valid");
                         fulfill({code: 200, body: {result}});
                     }).catch(function (err) {
@@ -115,7 +116,7 @@ export default class InsightFacade implements IInsightFacade {
                                     c.courses_pass = element["Pass"];
                                     c.courses_fail = element["Fail"];
                                     c.courses_audit = element["Audit"];
-                                    c.courses_uuid = element["id"];
+                                    c.courses_uuid = element["id"].toString();
                                     if (c.courses_dept !== undefined &&
                                         c.courses_id !== undefined &&
                                         c.courses_avg !== undefined &&
@@ -138,7 +139,7 @@ export default class InsightFacade implements IInsightFacade {
                 return Promise.all(parray)
                     .then(function () {
                         if (fs.existsSync("./test/data/" + id)) {
-                            Log.trace("exist");
+                            // Log.trace("exist");
                             return false;
                         }
                         Log.trace("start writing");
