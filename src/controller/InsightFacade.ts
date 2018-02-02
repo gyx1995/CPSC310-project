@@ -77,7 +77,16 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public listDatasets(): Promise<InsightResponse> {
-        return Promise.reject({code: -1, body: null});
+        return new Promise<InsightResponse>(function (resolve, reject) {
+            const ld: InsightDataset[] = new Array();
+            for (const [key, value] of this.datasets) {
+                const iddd: string = key;
+                const kinddd: InsightDatasetKind = value[0];
+                const num: number = value[1].length;
+                ld.push({id: iddd, kind: kinddd , numRows: num});
+            }
+            resolve({code: 200, body: {result: ld}});
+        });
     }
 
     private deleteArray(id: string) {
