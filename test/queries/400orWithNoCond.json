@@ -1,0 +1,23 @@
+{
+    "title": "400-checking the OR with no condition",
+    "query": {
+        "WHERE": {
+            "OR": [
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {
+            "error": "Invalid query: OR should contain at least one condition"
+        }
+    }
+}

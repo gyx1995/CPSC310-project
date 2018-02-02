@@ -1,0 +1,39 @@
+{
+    "title": "checking the column",
+    "query":{
+        "WHERE": {
+            "AND": [
+                {
+                    "EQ": {
+                        "courses_avg": 97.09
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_dept": "math"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id",
+                "courses_avg",
+                "courses_title",
+                "courses_pass",
+                "courses_fail"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {
+            "result": [
+                {"courses_dept":"math","courses_id":"541","courses_avg":97.09,"courses_title":"harmonic anal i","courses_pass":11,"courses_fail":0},
+                {"courses_dept":"math","courses_id":"541","courses_avg":97.09,"courses_title":"harmonic anal i","courses_pass":11,"courses_fail":0}]
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "title": "Something Strange in OPTIONS and column is empty",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_pass": 2500
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg",
+                "courses_uuid",
+                "courses_instructor",
+                "courses_pass"
+            ],
+            "OR": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {
+            "result": []
+        }
+    }
+}
+
