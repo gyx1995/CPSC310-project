@@ -69,10 +69,26 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
         try {
             response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
+            insightFacade.performQuery({});
         } catch (err) {
             response = err;
         } finally {
             expect(response.code).to.equal(expectedCode);
+        }
+    });
+
+    it("Should add a valid", async () => {
+        const id: string = "courses";
+        const expectedCode: number = 200;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.listDatasets();
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+            Log.trace(response.body.toString());
         }
     });
 
@@ -203,20 +219,6 @@ describe("InsightFacade Add/Remove Dataset", function () {
             expect(response.code).to.equal(expectedCode);
         }
     });
-
-    it("Should add a valid dataset", async () => {
-        const id: string = "courses";
-        const expectedCode: number = 204;
-        let response: InsightResponse;
-
-        try {
-            response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
-        } catch (err) {
-            response = err;
-        } finally {
-            expect(response.code).to.equal(expectedCode);
-        }
-    });
 });
 
 // This test suite dynamically generates tests from the JSON files in test/queries.
@@ -293,7 +295,6 @@ describe("InsightFacade PerformQuery", () => {
     afterEach(function () {
         Log.test(`AfterTest: ${this.currentTest.title}`);
     });
-
     // Dynamically create and run a test for each query in testQueries
     it("Should run test queries", () => {
         describe("Dynamic InsightFacade PerformQuery tests", () => {

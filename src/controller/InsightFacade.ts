@@ -3,7 +3,6 @@ import JSZip = require("jszip");
 import DoQuery from "../controller/DoQuery";
 import Log from "../Util";
 import {Icourses} from "./courses";
-import {Idataset} from "./dataset";
 import {Idatasets} from "./datasets";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} from "./IInsightFacade";
 
@@ -12,29 +11,30 @@ import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} fro
  */
 export default class InsightFacade implements IInsightFacade {
     // private static doQuery = new DoQuery();
-    private dataset: Idataset = {};
-    private datasets: {[id: string]: Idatasets};
+    // private dataset: Idataset = {};
+    private datasets: Idatasets;
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
+        this.datasets = {};
+        this.datasets["A"] = {kind: InsightDatasetKind.Courses, content: []};
     }
     public getDataset(id: string): any {
         // const that = this;
+        const that = this;
         Log.trace("1000");
-        Log.trace(this.dataset["courses"][0].courses_avg);
+        Log.trace(that.datasets["courses"].content[0].courses_title);
         Log.trace("hi");
-        return this.dataset[id];
+        return that.datasets[id].content;
     }
 
-    public getDatasets() {
-        return this.datasets;
-    }
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<InsightResponse> {
+        const that = this;
         return new Promise<InsightResponse>((resolve, reject) => {
-            this.unzip(content, id).then((ok) => {
+            that.unzip(content, id).then((ok) => {
                 if (ok) {
                     // Log.trace("1");
-                    resolve({code: 204, body: null});
+                    resolve({code: 204, body: {result: ""}});
                 } else {
                     // Log.trace("2");
                     reject({code: 400, body: {error: "my text"}});
@@ -50,7 +50,7 @@ export default class InsightFacade implements IInsightFacade {
             Log.trace("promise");
             fs.unlink("./test/data/" + id, (err) => {
                 if (err) {
-                    reject({code: 404, body: null});
+                    reject({code: 404, body: {result: ""}});
                     Log.trace("data no found");
                 } else {
                     resolve({code: 204, body: {error: "my text"}});
@@ -60,10 +60,16 @@ export default class InsightFacade implements IInsightFacade {
         });
     }
     public performQuery(query: any): Promise <InsightResponse> {
-        const doQuery = new DoQuery();
+        Log.trace("0");
+        const doQuery = new DoQuery(this);
+        Log.trace("1");
         return new Promise(function (fulfill, reject) {
-            try {const isValid = doQuery.isValid(query);
-                 if (isValid === 200) {
+            try {
+                Log.trace("2");
+                const isValid = doQuery.isValid(query);
+                Log.trace("3");
+                if (isValid === 200) {
+                    Log.trace("4");
                     doQuery.query(query).then(function (result) {
                         Log.trace("valid");
                         fulfill({code: 200, body: {result}});
@@ -71,8 +77,9 @@ export default class InsightFacade implements IInsightFacade {
                          reject({code: 400, body: {error: err}});
                      });
                  } else {
-                     Log.trace(" else invalid");
-                     reject({code: 400, body: {error: "invalid 400 query"}});
+                    Log.trace("5");
+                    Log.trace(" else invalid");
+                    reject({code: 400, body: {error: "invalid 400 query"}});
                  }
             } catch (err) {
                 Log.error("Query - ERROR: " + err);
@@ -83,12 +90,13 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public listDatasets(): Promise<InsightResponse> {
+        const that = this;
         return new Promise<InsightResponse>(function (resolve, reject) {
             const ld: InsightDataset[] = new Array();
-            for (const [key, value] of this.datasets) {
+            for (const key of Object.keys(that.datasets)) {
                 const iddd: string = key;
-                const kinddd: InsightDatasetKind = value[0];
-                const num: number = value[1].length;
+                const kinddd: InsightDatasetKind = that.datasets[key].kind;
+                const num: number = that.datasets[key].content.length;
                 ld.push({id: iddd, kind: kinddd , numRows: num});
             }
             resolve({code: 200, body: {result: ld}});
@@ -96,12 +104,12 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     private deleteArray(id: string) {
-        delete this.dataset[id];
+        delete this.datasets[id];
     }
     private unzip(content: string, id: string): Promise<boolean> {
+        const that = this;
         const myZip = new JSZip();
         let jsonFile: any;
-        const that = this;
         return myZip.loadAsync(content, {base64: true})
             .then(function (zip: JSZip) {
                 // Log.trace(zip.toString());
@@ -162,14 +170,16 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         Log.trace("start writing");
                         Log.trace(array.length.toString());
-                        const exists = this.datasets[id] ? true : false;
+                        const exists = that.datasets[id] !== undefined ? true : false;
                         if (exists === true) {
                             Log.trace("exist in datasets");
                             return false;
                         } else {
+                            that.datasets[id] = {kind : InsightDatasetKind.Courses, content : []};
+                            Log.trace(id);
                             fs.writeFileSync("./test/data/" + id, JSON.stringify(array));
-                            that.dataset[id] = array;
-                            Log.trace(that.dataset["courses"][0].courses_avg);
+                            that.datasets[id].content = array;
+                            Log.trace(that.datasets["courses"].content[0].courses_title);
                             Log.trace("file wrote");
                             return true;
                         }

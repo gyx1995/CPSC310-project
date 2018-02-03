@@ -8,10 +8,10 @@ export interface IQueryRequest {
 }
 
 export default class DoQuery {
-    private insight: any = new InsightFacade();
-    private data: any = this.insight.getDatasets();
+    private insight: InsightFacade;
+    private data: any;
    //  private data: any = fs.readFileSync("./test/data/courses", "utf8");
-    private array = JSON.parse(this.data);
+    private array: any;
 //    private courseName: any = {};
     private insightFacade: InsightFacade;
     private coursekey: any = ["courses_dept", "courses_id"
@@ -24,6 +24,14 @@ export default class DoQuery {
         , "courses_fail" , "courses_audit"];
     private courseSkey: any = ["courses_dept", "courses_id"
         , "courses_title", "courses_uuid" , "courses_instructor"];
+    constructor(facade: InsightFacade) {
+        Log.trace("0.0");
+        this.insight = facade;
+        Log.trace("0.1");
+        this.data = this.insight.getDataset("courses");
+        Log.trace("0.2");
+        this.array = this.data;
+    }
     public isValid(query: IQueryRequest): number {
         if (typeof query === "undefined" || query == null || Object.keys(query).length < 0) {
             Log.trace("1");
@@ -362,6 +370,7 @@ export default class DoQuery {
     }
 
     public query(query: IQueryRequest): Promise<any> {
+        // Log.trace("Length:" + this.array.length.toString());
         const that: any = this;
         const re: any = [];
         return new Promise(function (fulfill, reject) {
