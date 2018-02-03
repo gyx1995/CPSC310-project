@@ -1,0 +1,14 @@
+{
+    "title": "400-checking the query without the Option",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg":97
+            }
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {"error":"Query format is wrong"}
+    }
+}

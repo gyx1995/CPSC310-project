@@ -15,10 +15,15 @@ export default class DoQuery {
 //    private courseName: any = {};
     private insightFacade: InsightFacade;
     private coursekey: any = ["courses_dept", "courses_id"
-                            , "courses_avg", "courses_instructor"
-                            , "courses_title" , "courses_pass"
-                            , "courses_fail" , "courses_audit"
-                            , "courses_uuid"];
+        , "courses_avg", "courses_instructor"
+        , "courses_title" , "courses_pass"
+        , "courses_fail" , "courses_audit"
+        , "courses_uuid"];
+    private courseNkey: any = [
+        "courses_avg",  "courses_pass"
+        , "courses_fail" , "courses_audit"];
+    private courseSkey: any = ["courses_dept", "courses_id"
+        , "courses_title", "courses_uuid" , "courses_instructor"];
     public isValid(query: IQueryRequest): number {
         if (typeof query === "undefined" || query == null || Object.keys(query).length < 0) {
             Log.trace("1");
@@ -41,7 +46,7 @@ export default class DoQuery {
         }
         const i = this.isKeyValid(query);
         if (i !== 200) {
-         return i;
+            return i;
         }
         Log.trace("the query is valid");
         return 200;
@@ -58,20 +63,20 @@ export default class DoQuery {
                 return 400;
             }
         }
-        if (columns.indexOf(order) === -1) {
+        if ((columns.indexOf(order) === -1)) {
             Log.trace("order key is wrong");
             return 400;
         }
         return 200;
     }
     public condValid(cond: any ): number {
-        if (cond.empty) {
+        if (Object.keys(cond).length === 0 ) {
             Log.trace("1");
             return 400;
         } else {
             if ("NOT" in cond) {
                 const not = cond["NOT"];
-                if (not.length === 0 ) {
+                if (not.length === 1 ) {
                     Log.trace("notNOCondFalse");
                     return 400;
                 } else {
@@ -81,7 +86,7 @@ export default class DoQuery {
                 }
             } else if ("AND" in cond) {
                 const and = cond["AND"];
-                if (and.length === 0 ) {
+                if (and.length < 1 ) {
                     Log.trace("andNOCondFalse");
                     return 400;
                 } else {
@@ -92,7 +97,7 @@ export default class DoQuery {
                 }
             } else if ("OR" in cond) {
                 const or = cond["OR"];
-                if (or.length === 0 ) {
+                if (or.length < 1  ) {
                     Log.trace("orNOCondFalse");
                     return 400;
                 } else {
@@ -108,7 +113,7 @@ export default class DoQuery {
                     Log.trace("EQNOCondFalse");
                     return 400;
                 }
-                if (this.coursekey.indexOf(Object.keys(a)[0]) === -1) {
+                if (this.courseNkey.indexOf(Object.keys(a)[0]) === -1) {
                     Log.trace("EQWrongKeyCondFalse");
                     return 400;
                 }
@@ -124,7 +129,7 @@ export default class DoQuery {
                     Log.trace("LTNOCondFalse");
                     return 400;
                 }
-                if (this.coursekey.indexOf(Object.keys(a)[0]) === -1) {
+                if (this.courseNkey.indexOf(Object.keys(a)[0]) === -1) {
                     Log.trace("LTWrongKeyCondFalse");
                     return 400;
                 }
@@ -140,7 +145,7 @@ export default class DoQuery {
                     Log.trace("GTNOCondFalse");
                     return 400;
                 }
-                if (this.coursekey.indexOf(Object.keys(a)[0]) === -1) {
+                if (this.courseNkey.indexOf(Object.keys(a)[0]) === -1) {
                     Log.trace("GTWrongKeyCondFalse");
                     return 400;
                 }
@@ -156,12 +161,12 @@ export default class DoQuery {
                     Log.trace("ISNOCondFalse");
                     return 400;
                 }
-                if (this.coursekey.indexOf(Object.keys(a)[0]) === -1) {
+                if (this.courseSkey.indexOf(Object.keys(a)[0]) === -1) {
                     Log.trace("ISWrongKeyCondFalse");
                     return 400;
                 }
                 const v = Object.values(a)[0];
-                if (!(isString(v))) {
+                if (!(isString(v)) || !(/^[*]?[^*]+[*]?$/).test(v)) { // regular expression
                     Log.trace("the value of IS is not a string");
                     return 400;
                 }
@@ -181,7 +186,6 @@ export default class DoQuery {
         Log.trace(arr.length);
         this.insightFacade = new InsightFacade();
         Log.trace("111");
-        const re: any = [];
         if ("GT" in where) {
             const key = Object.keys(where["GT"])[0];
             const v = where["GT"][key];

@@ -1,0 +1,29 @@
+{
+    "title": "checking the a empty column",
+    "query":{
+        "WHERE": {
+            "GT": {
+                "courses_pass": 2500
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_instructor"
+
+            ],
+            "ORDER": "courses_instructor",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {
+            "result":[
+                {"courses_instructor":""},
+                {"courses_instructor":""},
+                {"courses_instructor":""},
+                {"courses_instructor":""},
+                {"courses_instructor":""}]
+        }
+    }
+}
