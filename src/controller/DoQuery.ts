@@ -8,8 +8,9 @@ export interface IQueryRequest {
 }
 
 export default class DoQuery {
-    // private datasets: Datasets = null;
-    private data: any = fs.readFileSync("./test/data/courses", "utf8");
+    private insight: any = new InsightFacade();
+    private data: any = this.insight.getDatasets();
+   //  private data: any = fs.readFileSync("./test/data/courses", "utf8");
     private array = JSON.parse(this.data);
 //    private courseName: any = {};
     private insightFacade: InsightFacade;

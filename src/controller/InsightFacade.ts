@@ -3,7 +3,8 @@ import JSZip = require("jszip");
 import DoQuery from "../controller/DoQuery";
 import Log from "../Util";
 import {Icourses} from "./courses";
-import {Idatasets} from "./dataset";
+import {Idataset} from "./dataset";
+import {Idatasets} from "./datasets";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} from "./IInsightFacade";
 
 /**
@@ -11,7 +12,8 @@ import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} fro
  */
 export default class InsightFacade implements IInsightFacade {
     // private static doQuery = new DoQuery();
-    private dataset: Idatasets = {};
+    private dataset: Idataset = {};
+    private datasets: {[id: string]: Idatasets};
 
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
@@ -23,6 +25,10 @@ export default class InsightFacade implements IInsightFacade {
         Log.trace("hi");
         return this.dataset[id];
     }
+
+    public getDatasets() {
+        return this.datasets;
+    }
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<InsightResponse> {
         return new Promise<InsightResponse>((resolve, reject) => {
             this.unzip(content, id).then((ok) => {
@@ -31,7 +37,7 @@ export default class InsightFacade implements IInsightFacade {
                     resolve({code: 204, body: null});
                 } else {
                     // Log.trace("2");
-                    reject({code: 400, body: null});
+                    reject({code: 400, body: {error: "my text"}});
                 }
             });
         });
@@ -47,7 +53,7 @@ export default class InsightFacade implements IInsightFacade {
                     reject({code: 404, body: null});
                     Log.trace("data no found");
                 } else {
-                    resolve({code: 204, body: null});
+                    resolve({code: 204, body: {error: "my text"}});
                     Log.trace("delete successfully");
                 }
             });
@@ -138,6 +144,9 @@ export default class InsightFacade implements IInsightFacade {
                                         array.push(c);
                                     }
                                 }
+                                if (array.length === 0) {
+                                    return false;
+                                }
                             } catch (err) {
                                 Log.trace(err);
                                 return false;
@@ -153,11 +162,17 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         Log.trace("start writing");
                         Log.trace(array.length.toString());
-                        fs.writeFileSync("./test/data/" + id, JSON.stringify(array));
-                        that.dataset[id] = array;
-                        Log.trace(that.dataset["courses"][0].courses_avg);
-                        Log.trace("file wrote");
-                        return true;
+                        const exists = this.datasets[id] ? true : false;
+                        if (exists === true) {
+                            Log.trace("exist in datasets");
+                            return false;
+                        } else {
+                            fs.writeFileSync("./test/data/" + id, JSON.stringify(array));
+                            that.dataset[id] = array;
+                            Log.trace(that.dataset["courses"][0].courses_avg);
+                            Log.trace("file wrote");
+                            return true;
+                        }
                     }).catch(function (err: Error) {
                         Log.error(err.message);
                         return false;
