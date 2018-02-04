@@ -24,13 +24,13 @@ export default class DoQuery {
         , "courses_fail" , "courses_audit"];
     private courseSkey: any = ["courses_dept", "courses_id"
         , "courses_title", "courses_uuid" , "courses_instructor"];
-    constructor(facade: InsightFacade) {
+    constructor(data: InsightFacade) {
         Log.trace("0.0");
-        this.insight = facade;
+        this.array = data;
         Log.trace("0.1");
-        this.data = this.insight.getDataset("courses");
+        // this.data = this.insight.getDataset("courses");
         Log.trace("0.2");
-        this.array = this.data;
+        // this.array = this.data;
     }
     public isValid(query: IQueryRequest): number {
         if (typeof query === "undefined" || query == null || Object.keys(query).length < 0) {
@@ -186,7 +186,13 @@ export default class DoQuery {
         }
     }
     public filter(where: any): any {
+        //////////////////
+        // this.array = this.insight.getDataset(id);
         const arr = this.array;
+        Log.trace("length of data" + arr.length);
+        /////////////////
+        // const arr = this.array;
+        ///////////////
         const ans: any = [];
         for (let i = 0; i < arr.length; i++) {
             ans[i] = 0;
@@ -371,6 +377,13 @@ export default class DoQuery {
 
     public query(query: IQueryRequest): Promise<any> {
         // Log.trace("Length:" + this.array.length.toString());
+        /////////////////////////////////////
+        // const options0: any = query["OPTIONS"];
+        // const x = Object.keys(options0["COLUMNS"])[0];
+        // // const id = x.slice(0, x.indexOf("_"));
+        // const id = "courses";
+        // Log.trace("the id " + id);
+        ////////////////////////////////////
         const that: any = this;
         const re: any = [];
         return new Promise(function (fulfill, reject) {

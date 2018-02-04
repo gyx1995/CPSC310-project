@@ -61,7 +61,7 @@ export default class InsightFacade implements IInsightFacade {
     }
     public performQuery(query: any): Promise <InsightResponse> {
         Log.trace("0");
-        const doQuery = new DoQuery(this);
+        const doQuery = new DoQuery(this.getDataset("courses"));
         Log.trace("1");
         return new Promise(function (fulfill, reject) {
             try {
