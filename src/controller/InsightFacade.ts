@@ -65,7 +65,7 @@ export default class InsightFacade implements IInsightFacade {
         Log.trace("array cleared");
         return new Promise(function (resolve, reject) {
             Log.trace("promise");
-            fs.unlink("./test/data/" + id, (err) => {
+            fs.unlink("./test/unzipData/" + id + ".json", (err) => {
                 if (err) {
                     reject({code: 404, body: {result: ""}});
                     Log.trace("data no found");
@@ -189,7 +189,7 @@ export default class InsightFacade implements IInsightFacade {
                 });
                 return Promise.all(parray)
                     .then(function () {
-                        if (fs.existsSync("./test/data/" + id)) {
+                        if (fs.existsSync("./test/unzipData/" + id)) {
                             // Log.trace("exist");
                             return false;
                         }
@@ -202,7 +202,14 @@ export default class InsightFacade implements IInsightFacade {
                         } else {
                             that.datasets[id] = {kind: InsightDatasetKind.Courses, content: []};
                             Log.trace(id);
-                            fs.writeFileSync("./test/data/" + id, JSON.stringify(array));
+                            if (fs.existsSync("./test/unzipData")) {
+                                Log.trace("UNZIP");
+                                fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
+                            } else {
+                                Log.trace("unzip else");
+                                fs.mkdirSync("./test/unzipData/");
+                                fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
+                            }
                             that.datasets[id].content = array;
                             Log.trace(that.datasets["courses"].content[0].courses_title);
                             Log.trace("file wrote");
