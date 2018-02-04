@@ -69,7 +69,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
         try {
             response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
-            insightFacade.performQuery({});
+            // insightFacade.performQuery({});
         } catch (err) {
             response = err;
         } finally {

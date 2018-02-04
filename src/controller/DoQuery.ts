@@ -1,6 +1,7 @@
 import fs = require("fs");
 import {isNumber, isString} from "util";
 import Log from "../Util";
+import {InsightDatasetKind} from "./IInsightFacade";
 import InsightFacade from "./InsightFacade";
 export interface IQueryRequest {
     WHERE: {};
@@ -10,9 +11,12 @@ export interface IQueryRequest {
 export default class DoQuery {
     private insight: InsightFacade;
     private data: any;
-   //  private data: any = fs.readFileSync("./test/data/courses", "utf8");
+    //  private data: any = fs.readFileSync("./test/data/courses", "utf8");
     private array: any;
 //    private courseName: any = {};
+    /////////////////////
+    // private datasetss: { [id: string]: string };
+    /////////////////////
     private insightFacade: InsightFacade;
     private coursekey: any = ["courses_dept", "courses_id"
         , "courses_avg", "courses_instructor"
@@ -24,13 +28,16 @@ export default class DoQuery {
         , "courses_fail" , "courses_audit"];
     private courseSkey: any = ["courses_dept", "courses_id"
         , "courses_title", "courses_uuid" , "courses_instructor"];
-    constructor(data: InsightFacade) {
+    constructor(facade: InsightFacade) {
         Log.trace("0.0");
-        this.array = data;
+        this.insight = facade;
         Log.trace("0.1");
-        // this.data = this.insight.getDataset("courses");
+        /////////////////////////////////////////////////
+        // this.insight.addDataset("courses", this.datasetss["courses"], InsightDatasetKind.Courses);
+        ////////////////////////////////////////////////
+        this.data = this.insight.getDataset("courses");
         Log.trace("0.2");
-        // this.array = this.data;
+        this.array = this.data;
     }
     public isValid(query: IQueryRequest): number {
         if (typeof query === "undefined" || query == null || Object.keys(query).length < 0) {
@@ -186,13 +193,7 @@ export default class DoQuery {
         }
     }
     public filter(where: any): any {
-        //////////////////
-        // this.array = this.insight.getDataset(id);
         const arr = this.array;
-        Log.trace("length of data" + arr.length);
-        /////////////////
-        // const arr = this.array;
-        ///////////////
         const ans: any = [];
         for (let i = 0; i < arr.length; i++) {
             ans[i] = 0;
@@ -250,7 +251,6 @@ export default class DoQuery {
             //         re.push(d);
             //     }
             // }
-
             for (let i = 0; i < arr.length; i ++) {
                 // Log.trace(d[key]);
                 if (arr[i][key] === v) {
@@ -377,13 +377,6 @@ export default class DoQuery {
 
     public query(query: IQueryRequest): Promise<any> {
         // Log.trace("Length:" + this.array.length.toString());
-        /////////////////////////////////////
-        // const options0: any = query["OPTIONS"];
-        // const x = Object.keys(options0["COLUMNS"])[0];
-        // // const id = x.slice(0, x.indexOf("_"));
-        // const id = "courses";
-        // Log.trace("the id " + id);
-        ////////////////////////////////////
         const that: any = this;
         const re: any = [];
         return new Promise(function (fulfill, reject) {
