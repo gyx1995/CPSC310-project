@@ -121,7 +121,9 @@ export default class InsightFacade implements IInsightFacade {
                 const iddd: string = key;
                 const kinddd: InsightDatasetKind = that.datasets[key].kind;
                 const num: number = that.datasets[key].content.length;
-                ld.push({id: iddd, kind: kinddd, numRows: num});
+                if (num > 0) {
+                    ld.push({id: iddd, kind: kinddd, numRows: num});
+                }
             }
             resolve({code: 200, body: {result: ld}});
         });
@@ -331,12 +333,14 @@ export default class InsightFacade implements IInsightFacade {
         } else {
             if ("NOT" in cond) {
                 const not = cond["NOT"];
-                if (not.length === 1 ) {
+                if (not.length < 1 ) {
                     Log.trace("notNOCondFalse");
                     return 400;
                 } else {
                     Log.trace("check not");
-                    this.condValid(not);
+                    if ( 400 === this.condValid(not)) {
+                        return 400;
+                    }
                     Log.trace("check not finished");
                 }
             } else if ("AND" in cond) {
@@ -347,7 +351,9 @@ export default class InsightFacade implements IInsightFacade {
                 } else {
                     Log.trace("check and");
                     for (const suband of and ) {
-                        this.condValid(suband);
+                        if ( 400 === this.condValid(suband)) {
+                            return 400;
+                        }
                     }
                 }
             } else if ("OR" in cond) {
@@ -358,7 +364,9 @@ export default class InsightFacade implements IInsightFacade {
                 } else {
                     Log.trace("check OR");
                     for (const subor of or) {
-                        this.condValid(subor);
+                        if ( 400 === this.condValid(subor)) {
+                            return 400;
+                        }
                     }
                 }
             } else if ("EQ" in cond) {
@@ -438,7 +446,7 @@ export default class InsightFacade implements IInsightFacade {
         for (let i = 0; i < arr.length; i++) {
             ans[i] = 0;
         }
-        Log.trace(arr.length);
+        // Log.trace(arr.length);
         /////////////////////////////
         ////// this.insightFacade = new InsightFacade();
         ///////////////////////////
@@ -503,15 +511,54 @@ export default class InsightFacade implements IInsightFacade {
             }
         }
         if ("IS" in where) {
+            Log.trace("in IS");
             const key = Object.keys(where["IS"])[0];
-            const v = where["IS"][key];
-            Log.trace(v);
-            for (let i = 0; i < arr.length; i ++) {
-                // Log.trace(d[key]);
-                if (arr[i][key] === v) {
-                    ans[i] = 1;
-                } else {
-                    ans[i] = 0;
+            let v = where["IS"][key];
+            let subis = "";
+            ///////////////////////////////////////////
+            if (v.indexOf("*") !== -1 ) {
+                Log.trace("yes, there is a *!!!!!!!!!!!!!!!");
+                const idx = v.indexOf("*");
+                Log.trace(idx);
+                switch (idx) {
+                    case 0:
+                        const sub = v.substring(1, v.length);
+                        Log.trace("it is in the first one");
+                        if (sub.indexOf("*") !== -1 ) {
+                            subis = v.substring(1, v.length - 1);
+                            Log.trace("have two *:" + subis);
+                        } else {
+                            subis = v.substring(1, v.length);
+                        }
+                        break;
+                    case v.length - 1:
+                        Log.trace("it is in the last one");
+                        subis = v.substring(0, v.length - 1);
+                        Log.trace("it is in the last place: " + subis);
+                        break;
+                    default:
+                        Log.trace("it is in the  middle --- error");
+                        break;
+                }
+                v = subis;
+                for (let i = 0; i < arr.length; i++) {
+                    // Log.trace(d[key]);
+                    if (arr[i][key].indexOf(v) !== -1 ) {
+                        ans[i] = 1;
+                    } else {
+                        ans[i] = 0;
+                    }
+                }
+            } else {
+                //////////////////////////////////////////
+                Log.trace(v);
+                for (let i = 0; i < arr.length; i++) {
+                    // Log.trace(d[key]);
+                    if (arr[i][key] === v) {
+                        ans[i] = 1;
+                    } else {
+                        ans[i] = 0;
+                    }
                 }
             }
         }
@@ -589,7 +636,7 @@ export default class InsightFacade implements IInsightFacade {
         //     Log.trace(d[key]);
         // }
         Log.trace("inside filter done");
-        Log.trace(ans);
+        // Log.trace(ans);
         return ans;
     }
     private select(result: any, option: any): Promise<any> {
@@ -608,10 +655,12 @@ export default class InsightFacade implements IInsightFacade {
                 final.push(o);
             }
             Log.trace(final[0]["courses_avg"]);
-            const order = option["ORDER"];
-            final.sort(function (a: any, b: any) {
-                return a[order] - b[order];
-            });
+            if ("ORDER" in option) {
+                const order = option["ORDER"];
+                final.sort(function (a: any, b: any) {
+                    return a[order] - b[order];
+                });
+            }
             Log.trace("after sort");
             Log.trace(Object.keys(final[0])[0]);
             fulfill(final);
