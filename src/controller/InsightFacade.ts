@@ -429,6 +429,9 @@ export default class InsightFacade implements IInsightFacade {
                     return 400;
                 }
                 const v = Object.values(a)[0];
+                if (v === "*") {
+                    return 200;
+                }
                 if (!(isString(v)) || !(/^[*]?[^*]+[*]?$/).test(v)) { // regular expression
                     Log.trace("the value of IS is not a string");
                     return 400;
@@ -522,6 +525,12 @@ export default class InsightFacade implements IInsightFacade {
                 Log.trace(idx);
                 switch (idx) {
                     case 0:
+                        if (v.length === 1 ) {
+                            for (let i = 0; i < arr.length; i++) {
+                                // Log.trace(d[key]);
+                                ans[i] = 1;
+                            }
+                        }
                         const sub = v.substring(1, v.length);
                         Log.trace("it is in the first one");
                         if (sub.indexOf("*") !== -1 ) {
