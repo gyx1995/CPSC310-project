@@ -312,18 +312,23 @@ export default class InsightFacade implements IInsightFacade {
     private isKeyValid(query: IQueryRequest): number {
         const options: any = query["OPTIONS"];
         const columns = options["COLUMNS"];
-        const order = options["ORDER"];
-        Log.trace(order);
         for (const c of columns) {
             if (this.coursekey.indexOf(c) === -1) {
                 Log.trace("fals1");
                 return 400;
             }
         }
-        if ((columns.indexOf(order) === -1)) {
-            Log.trace("order key is wrong");
-            return 400;
+        if ("ORDER" in options) {
+            const order = options["ORDER"];
+            if ((columns.indexOf(order) === -1)) {
+                Log.trace("order key is wrong");
+                return 400;
+            }
         }
+        // if ((columns.indexOf(order) === -1)) {
+        //     Log.trace("order key is wrong");
+        //     return 400;
+        // }
         return 200;
     }
     private condValid(cond: any ): number {

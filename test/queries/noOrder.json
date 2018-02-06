@@ -15,7 +15,7 @@
         }
     },
     "response": {
-        "code": 400,
+        "code": 200,
         "body": {
             "result":[
                 {"courses_avg":99.19,"courses_dept":"cnps"},
