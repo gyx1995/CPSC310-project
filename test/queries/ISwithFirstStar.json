@@ -10,7 +10,7 @@
                 },
                 {
                     "IS": {
-                        "courses_dept": "*s"
+                        "courses_dept": "*ps"
                     }
                 }
             ]
@@ -27,20 +27,9 @@
     "response": {
         "code": 200,
         "body": {
-            "result": [{"courses_dept":"nurs","courses_avg":97.33},
-                {"courses_dept":"nurs","courses_avg":97.33},
+            "result": [
                 {"courses_dept":"cnps","courses_avg":97.47},
                 {"courses_dept":"cnps","courses_avg":97.47},
-                {"courses_dept":"nurs","courses_avg":97.53},
-                {"courses_dept":"nurs","courses_avg":97.53},
-                {"courses_dept":"nurs","courses_avg":98.21},
-                {"courses_dept":"nurs","courses_avg":98.21},
-                {"courses_dept":"nurs","courses_avg":98.5},
-                {"courses_dept":"nurs","courses_avg":98.5},
-                {"courses_dept":"nurs","courses_avg":98.58},
-                {"courses_dept":"nurs","courses_avg":98.58},
-                {"courses_dept":"nurs","courses_avg":98.71},
-                {"courses_dept":"nurs","courses_avg":98.71},
                 {"courses_dept":"cnps","courses_avg":99.19}]
         }
     }

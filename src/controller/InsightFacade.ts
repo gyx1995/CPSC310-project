@@ -432,6 +432,9 @@ export default class InsightFacade implements IInsightFacade {
                 if (v === "*") {
                     return 200;
                 }
+                if (v === "**") {
+                    return 200;
+                }
                 if (!(isString(v)) || !(/^[*]?[^*]+[*]?$/).test(v)) { // regular expression
                     Log.trace("the value of IS is not a string");
                     return 400;
