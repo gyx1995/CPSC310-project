@@ -530,33 +530,58 @@ export default class InsightFacade implements IInsightFacade {
                                 // Log.trace(d[key]);
                                 ans[i] = 1;
                             }
-                        }
-                        const sub = v.substring(1, v.length);
-                        Log.trace("it is in the first one");
-                        if (sub.indexOf("*") !== -1 ) {
-                            subis = v.substring(1, v.length - 1);
-                            Log.trace("have two *:" + subis);
                         } else {
-                            subis = v.substring(1, v.length);
+                            const sub = v.substring(1, v.length);
+                            // Log.trace("it is in the first one");
+                            if (sub.indexOf("*") !== -1) {
+                                subis = v.substring(1, v.length - 1);
+                                // Log.trace("have two *:" + subis);
+                                v = subis;
+                                for (let i = 0; i < arr.length; i++) {
+                                    // Log.trace(d[key]);
+                                    if (arr[i][key].indexOf(v) !== -1 ) {
+                                        ans[i] = 1;
+                                    } else {
+                                        ans[i] = 0;
+                                    }
+                                }
+                            } else {
+                                // Log.trace("have one *: " + sub);
+                                const l = sub.length;
+                                for (let i = 0; i < arr.length; i++) {
+                                    // Log.trace(d[key]);
+                                    const dataString = arr[i][key];
+                                    const dataSub = dataString.substring(dataString.length - l, dataString.length);
+                                    if (dataSub === sub) {
+                                        // Log.trace("in the data the : " + dataSub);
+                                        ans[i] = 1;
+                                    } else {
+                                        ans[i] = 0;
+                                    }
+                                }
+                            }
                         }
                         break;
                     case v.length - 1:
                         Log.trace("it is in the last one");
                         subis = v.substring(0, v.length - 1);
-                        Log.trace("it is in the last place: " + subis);
+                        Log.trace("it isn in the last place: " + subis);
+                        const ln = subis.length;
+                        for (let i = 0; i < arr.length; i++) {
+                            // Log.trace(d[key]);
+                            const dataString = arr[i][key];
+                            const dataSub = dataString.substring(0, ln);
+                            if (dataSub === subis) {
+                                Log.trace("in the data the : " + dataSub);
+                                ans[i] = 1;
+                            } else {
+                                ans[i] = 0;
+                            }
+                        }
                         break;
                     default:
                         Log.trace("it is in the  middle --- error");
                         break;
-                }
-                v = subis;
-                for (let i = 0; i < arr.length; i++) {
-                    // Log.trace(d[key]);
-                    if (arr[i][key].indexOf(v) !== -1 ) {
-                        ans[i] = 1;
-                    } else {
-                        ans[i] = 0;
-                    }
                 }
             } else {
                 //////////////////////////////////////////
