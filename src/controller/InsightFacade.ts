@@ -59,6 +59,10 @@ export default class InsightFacade implements IInsightFacade {
         });
     }
 
+    // public unzipRoom() {
+    //
+    // }
+
     public removeDataset(id: string): Promise<InsightResponse> {
         Log.trace("start remove");
         this.deleteArray(id);
@@ -136,97 +140,116 @@ export default class InsightFacade implements IInsightFacade {
     private unzip(content: string, id: string): Promise<boolean> {
         const that = this;
         const myZip = new JSZip();
+        Log.trace(myZip.toString());
         let jsonFile: any;
-        return myZip.loadAsync(content, {base64: true})
-            .then(function (zip: JSZip) {
-                // Log.trace(zip.toString());
-                const parray = Array() as any[];
-                const array = Array() as any[];
-                zip.forEach(function (path, file) {
-                    const p = file.async("text")
-                        .then(function (fileData) {
-                            // Log.trace(path);
-                            // Log.trace(fileData);
-                            try {
-                                jsonFile = JSON.parse(fileData);
-                                // Log.trace(jsonFile);
-                                // Log.trace(jsonFile.result.toString().split(",");
-                                for (const element of jsonFile.result) {
-                                    const c: Icourses = {
-                                        courses_dept: "", courses_id: "",
-                                        courses_avg: 0, courses_instructor: "",
-                                        courses_title: "", courses_pass: 0, courses_fail: 0,
-                                        courses_audit: 0, courses_uuid: "",
-                                    };
-                                    c.courses_dept = element["Subject"];
-                                    c.courses_id = element["Course"];
-                                    c.courses_avg = element["Avg"];
-                                    c.courses_instructor = element["Professor"];
-                                    c.courses_title = element["Title"];
-                                    c.courses_pass = element["Pass"];
-                                    c.courses_fail = element["Fail"];
-                                    c.courses_audit = element["Audit"];
-                                    c.courses_uuid = element["id"].toString();
-                                    if (c.courses_dept !== undefined &&
-                                        c.courses_id !== undefined &&
-                                        c.courses_avg !== undefined &&
-                                        c.courses_instructor !== undefined &&
-                                        c.courses_title !== undefined &&
-                                        c.courses_pass !== undefined &&
-                                        c.courses_fail !== undefined &&
-                                        c.courses_audit !== undefined &&
-                                        c.courses_uuid !== undefined) {
-                                        array.push(c);
+        if (id === "courses") {
+            return myZip.loadAsync(content, {base64: true})
+                .then(function (zip: JSZip) {
+                    // Log.trace(zip.toString());
+                    const parray = Array() as any[];
+                    const array = Array() as any[];
+                    zip.forEach(function (path, file) {
+                        const p = file.async("text")
+                            .then(function (fileData) {
+                                // Log.trace(path);
+                                // Log.trace(fileData);
+                                try {
+                                    jsonFile = JSON.parse(fileData);
+                                    // Log.trace(jsonFile);
+                                    // Log.trace(jsonFile.result.toString().split(",");
+                                    for (const element of jsonFile.result) {
+                                        const c: Icourses = {
+                                            courses_dept: "", courses_id: "",
+                                            courses_avg: 0, courses_instructor: "",
+                                            courses_title: "", courses_pass: 0, courses_fail: 0,
+                                            courses_audit: 0, courses_uuid: "",
+                                        };
+                                        c.courses_dept = element["Subject"];
+                                        c.courses_id = element["Course"];
+                                        c.courses_avg = element["Avg"];
+                                        c.courses_instructor = element["Professor"];
+                                        c.courses_title = element["Title"];
+                                        c.courses_pass = element["Pass"];
+                                        c.courses_fail = element["Fail"];
+                                        c.courses_audit = element["Audit"];
+                                        c.courses_uuid = element["id"].toString();
+                                        if (c.courses_dept !== undefined &&
+                                            c.courses_id !== undefined &&
+                                            c.courses_avg !== undefined &&
+                                            c.courses_instructor !== undefined &&
+                                            c.courses_title !== undefined &&
+                                            c.courses_pass !== undefined &&
+                                            c.courses_fail !== undefined &&
+                                            c.courses_audit !== undefined &&
+                                            c.courses_uuid !== undefined) {
+                                            array.push(c);
+                                        }
                                     }
-                                }
-                                if (array.length === 0) {
+                                    if (array.length === 0) {
+                                        return false;
+                                    }
+                                } catch (err) {
+                                   // Log.trace(err);
                                     return false;
                                 }
-                            } catch (err) {
-                                Log.trace(err);
+                            });
+                        parray.push(p);
+                    });
+                    return Promise.all(parray)
+                        .then(function () {
+                            if (fs.existsSync("./test/unzipData/" + id)) {
+                                // Log.trace("exist");
                                 return false;
                             }
-                        });
-                    parray.push(p);
-                });
-                return Promise.all(parray)
-                    .then(function () {
-                        if (fs.existsSync("./test/unzipData/" + id)) {
-                            // Log.trace("exist");
-                            return false;
-                        }
-                        Log.trace("start writing");
-                        Log.trace(array.length.toString());
-                        const exists = that.datasets[id] !== undefined ? true : false;
-                        if (exists === true) {
-                            Log.trace("exist in datasets");
-                            return false;
-                        } else {
-                            that.datasets[id] = {kind: InsightDatasetKind.Courses, content: []};
-                            Log.trace(id);
-                            if (fs.existsSync("./test/unzipData")) {
-                                Log.trace("UNZIP");
-                                fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
+                            // Log.trace("start writing");
+                            // Log.trace(array.length.toString());
+                            const exists = that.datasets[id] !== undefined ? true : false;
+                            if (exists === true) {
+                              //  Log.trace("exist in datasets");
+                                return false;
                             } else {
-                                Log.trace("unzip else");
-                                fs.mkdirSync("./test/unzipData/");
-                                fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
+                                that.datasets[id] = {kind: InsightDatasetKind.Courses, content: []};
+                                // Log.trace(id);
+                                if (fs.existsSync("./test/unzipData")) {
+                                    // Log.trace("UNZIP");
+                                    fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
+                                } else {
+                                    // Log.trace("unzip else");
+                                    fs.mkdirSync("./test/unzipData/");
+                                    fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
+                                }
+                                that.datasets[id].content = array;
+                                // Log.trace(that.datasets["courses"].content[0].courses_title);
+                                // Log.trace("file wrote");
+                                return true;
                             }
-                            that.datasets[id].content = array;
-                            Log.trace(that.datasets["courses"].content[0].courses_title);
-                            Log.trace("file wrote");
-                            return true;
-                        }
-                    }).catch(function (err: Error) {
-                        Log.error(err.message);
-                        return false;
+                        }).catch(function (err: Error) {
+                            // Log.error(err.message);
+                            return false;
+                        });
+                    // return true;
+                })
+                .catch(function (err: Error) {
+                    // Log.trace("invalid zip file format");
+                    return false;
+                });
+        } else if (id === "room") {
+            Log.trace("room");
+            return myZip.loadAsync(content, {base64: true})
+                .then(function (zip: JSZip) {
+                    Log.trace(zip.toString());
+                    zip.forEach(function (path, file) {
+                        const p = file.async("text")
+                            .then(function (fileData) {
+                                Log.trace("success");
+                })
+                .catch(function (err: Error) {
+                    Log.trace("invalid zip file format");
+                    return false;
                     });
-                // return true;
-            })
-            .catch(function (err: Error) {
-                Log.trace("invalid zip file format");
-                return false;
-            });
+                 }
+            }
+        }
     }
     ///////////////////////////////////////
     private query(query: IQueryRequest): Promise<any> {
