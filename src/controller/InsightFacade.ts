@@ -1,5 +1,7 @@
+import DatasetHelper, {IGeoResponse} from "./DatasetHelper";
 import fs = require("fs");
 import JSZip = require("jszip");
+import parse5 = require("parse5"); // parse5 for D3
 import {isNumber, isString} from "util";
 import DoQuery from "../controller/DoQuery";
 import Log from "../Util";
@@ -10,6 +12,7 @@ import {Idatasets} from "./datasets";
 // import {expect} from "chai";
 import {IQueryRequest} from "./DoQuery";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} from "./IInsightFacade";
+import {Iroom} from "./Irooms";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -17,6 +20,7 @@ import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightResponse} fro
 export default class InsightFacade implements IInsightFacade {
     // private static doQuery = new DoQuery();
     // private dataset: Idataset = {};
+    private static datasetHelper = new DatasetHelper();
     private datasets: Idatasets;
     private coursekey: any = ["courses_dept", "courses_id"
         , "courses_avg", "courses_instructor"
@@ -46,7 +50,9 @@ export default class InsightFacade implements IInsightFacade {
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<InsightResponse> {
         const that = this;
+        // Log.trace("addDataset");
         return new Promise<InsightResponse>((resolve, reject) => {
+            // Log.trace("beforeUnzip");
             that.unzip(content, id).then((ok) => {
                 if (ok) {
                     // Log.trace("1");
@@ -58,10 +64,6 @@ export default class InsightFacade implements IInsightFacade {
             });
         });
     }
-
-    // public unzipRoom() {
-    //
-    // }
 
     public removeDataset(id: string): Promise<InsightResponse> {
         Log.trace("start remove");
@@ -138,13 +140,16 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     private unzip(content: string, id: string): Promise<boolean> {
+        // Log.trace("enterUnzip");
         const that = this;
         const myZip = new JSZip();
-        Log.trace(myZip.toString());
+        const helper = InsightFacade.datasetHelper;
+        // Log.trace(myZip.toString());
         let jsonFile: any;
-        if (id === "courses") {
-            return myZip.loadAsync(content, {base64: true})
-                .then(function (zip: JSZip) {
+        return myZip.loadAsync(content, {base64: true})
+            .then(function (zip: JSZip) {
+                Log.trace("enterLoadAsync");
+                if (id === "courses") {
                     // Log.trace(zip.toString());
                     const parray = Array() as any[];
                     const array = Array() as any[];
@@ -189,7 +194,7 @@ export default class InsightFacade implements IInsightFacade {
                                         return false;
                                     }
                                 } catch (err) {
-                                   // Log.trace(err);
+                                    // Log.trace(err);
                                     return false;
                                 }
                             });
@@ -205,7 +210,7 @@ export default class InsightFacade implements IInsightFacade {
                             // Log.trace(array.length.toString());
                             const exists = that.datasets[id] !== undefined ? true : false;
                             if (exists === true) {
-                              //  Log.trace("exist in datasets");
+                                //  Log.trace("exist in datasets");
                                 return false;
                             } else {
                                 that.datasets[id] = {kind: InsightDatasetKind.Courses, content: []};
@@ -228,28 +233,132 @@ export default class InsightFacade implements IInsightFacade {
                             return false;
                         });
                     // return true;
-                })
-                .catch(function (err: Error) {
-                    // Log.trace("invalid zip file format");
-                    return false;
-                });
-        } else if (id === "room") {
-            Log.trace("room");
-            return myZip.loadAsync(content, {base64: true})
-                .then(function (zip: JSZip) {
-                    Log.trace(zip.toString());
-                    zip.forEach(function (path, file) {
-                        const p = file.async("text")
-                            .then(function (fileData) {
-                                Log.trace("success");
-                })
-                .catch(function (err: Error) {
-                    Log.trace("invalid zip file format");
-                    return false;
+                } else if (id === "rooms") {
+                    Log.trace("enter room");
+                    const roomList = new Array() as any;
+                    return zip.file("index.htm").async("text").then(function (indexData) {
+                        const doc: any = parse5.parse(indexData);
+                        const parray = Array() as any[];
+                        // const tbody = helper.findDoc(doc, "td", "class", "views-field views-f
+                        // ield-field-building-code");
+                        const tbody = helper.findDoc(doc, "tbody", null, null );
+                        for (const child of tbody.childNodes) {
+                            if (child.tagName === "tr") {
+                                const s = helper.findDoc(child, "td", "class",
+                                    "views-field views-field-field-building-code");
+                                const shortName: string = s.childNodes[0].value.trim();
+                                // Log.trace(shortName);
+                                const path = "campus/discover/buildings-and-classrooms/" + shortName;
+                                const p = function () {
+                                    return zip.file(path).async("text").then(function (moreData) {
+                                        const doc2: any = parse5.parse(moreData);
+                                        // const bInfo = helper.findDoc()
+                                        const fullName: string = helper.findDoc(doc2, "span", "class", "field-content").
+                                            childNodes[0].value.trim();
+                                        const address: string = helper.findDoc(doc2, "div", "class", "field-content").
+                                            childNodes[0].value.trim();
+                                        return helper.getLatLon(address)
+                                            .then(function (ll: IGeoResponse) {
+                                                // Log.trace(ll.lat.toString() + " " + ll.lon.toString());
+                                                const tbodyTable = helper.findDoc(doc2, "tbody", null, null);
+                                                if (tbodyTable !== null) {
+                                                    let i = 0;
+                                                    for (const c of tbodyTable.childNodes) {
+                                                        if (i % 2 === 0) {
+                                                            i++;
+                                                            continue;
+                                                        }
+                                                        const roomNoTag = helper.findDoc(c, "a", "title",
+                                                            "Room Details");
+                                                        const roomNo: string = roomNoTag.childNodes[0].value.trim();
+                                                        // Log.trace(roomNo.childNodes[0].value);
+                                                        // Log.trace();
+                                                        const url: string = roomNoTag.attrs[0].value.trim();
+                                                        const roomName: string = shortName + " " + roomNo;
+                                                        const seats: number = helper.findDoc(c, "td", "class",
+                                                            "views-field views-field-field-room-capacity").
+                                                            childNodes[0].value.trim();
+                                                        const roomTypes: string = helper.findDoc(c, "td", "class",
+                                                            "views-field views-field-field-room-type").
+                                                            childNodes[0].value.trim();
+                                                        const furniure: string = helper.findDoc(c, "td", "class",
+                                                            "views-field views-field-field-room-furniture").
+                                                            childNodes[0].value.trim();
+                                                        i++;
+                                                        // const room: Iroom = {
+                                                        //     fullName, shortName, roomNo, roomName, address,
+                                                        //      0.0, 0.0, seats, roomTypes, furniure, url
+                                                        // };
+                                                        const room: Iroom = {
+                                                            rooms_fullname: fullName,
+                                                            rooms_shortname: shortName,
+                                                            rooms_number: roomNo,
+                                                            rooms_name: roomName,
+                                                            rooms_address: address,
+                                                            rooms_lat: ll.lat,
+                                                            rooms_lon: ll.lon,
+                                                            rooms_seats: seats,
+                                                            rooms_type: roomTypes,
+                                                            rooms_furniture: furniure,
+                                                            rooms_href: url,
+                                                        };
+                                                        roomList.push(room);
+                                                    }
+                                                    // Log.trace(furniure.childNodes[0].value.trim());
+                                                }
+                                            }).catch(function (err) {
+                                                Log.trace(err.toString());
+                                            });
+                                        // Log.trace(address.childNodes[0].value);
+                                        // Log.trace(roomTypes.childNodes[0].value.trim());
+                                        // Log.trace(seats.childNodes[0].value.trim());
+                                        // Log.trace(fullName.childNodes[0].value);
+                                    }).catch(function (err) {
+                                        Log.trace(err.toString());
+                                    });
+                                };
+                                parray.push(p());
+                            }
+                        }
+                        return Promise.all(parray).then(function () {
+                            if (fs.existsSync("./test/unzipData/" + id + ".json")) {
+                                // Log.trace("exist");
+                                return false;
+                            }
+                            // Log.trace("start writing");
+                            // Log.trace(array.length.toString());
+                            const exists = that.datasets[id] !== undefined ? true : false;
+                            if (exists === true) {
+                                //  Log.trace("exist in datasets");
+                                return false;
+                            } else {
+                                that.datasets[id] = {kind: InsightDatasetKind.Rooms, content: []};
+                                // Log.trace(id);
+                                if (fs.existsSync("./test/unzipData")) {
+                                    // Log.trace("UNZIP");
+                                    fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(roomList));
+                                } else {
+                                    // Log.trace("unzip else");
+                                    fs.mkdirSync("./test/unzipData/");
+                                    fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(roomList));
+                                }
+                                that.datasets[id].content = roomList;
+                                // Log.trace(that.datasets["courses"].content[0].courses_title);
+                                Log.trace("file wrote");
+                                return true;
+                            }
+                        }).catch(function (err) {
+                            return false;
+                        });
+                    }).catch(function (err: any) {
+                        return false;
                     });
-                 }
-            }
-        }
+                }
+            })
+            .catch(function (err: Error) {
+                // Log.trace("invalid zip file format");
+                return false;
+            });
     }
     ///////////////////////////////////////
     private query(query: IQueryRequest): Promise<any> {
