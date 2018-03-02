@@ -93,6 +93,35 @@ describe("InsightFacade Add/Remove Dataset", function () {
         }
     });
 
+    it("Should add a valid dataset again", async () => {
+        const id: string = "rooms";
+        const expectedCode: number = 400;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Rooms);
+            // insightFacade.performQuery({});
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+        }
+    });
+
+    it("should remove a valid room dataset", async () => {
+        const id: string = "rooms";
+        const expectedCode: number = 204;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.removeDataset(id);
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+        }
+    });
+
     it("Should add a valid", async () => {
         const id: string = "courses";
         const expectedCode: number = 200;

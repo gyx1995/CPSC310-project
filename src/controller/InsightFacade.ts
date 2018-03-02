@@ -148,7 +148,7 @@ export default class InsightFacade implements IInsightFacade {
         let jsonFile: any;
         return myZip.loadAsync(content, {base64: true})
             .then(function (zip: JSZip) {
-                Log.trace("enterLoadAsync");
+                // Log.trace("enterLoadAsync");
                 if (id === "courses") {
                     // Log.trace(zip.toString());
                     const parray = Array() as any[];
@@ -167,7 +167,7 @@ export default class InsightFacade implements IInsightFacade {
                                             courses_dept: "", courses_id: "",
                                             courses_avg: 0, courses_instructor: "",
                                             courses_title: "", courses_pass: 0, courses_fail: 0,
-                                            courses_audit: 0, courses_uuid: "",
+                                            courses_audit: 0, courses_uuid: "", courses_year: 0,
                                         };
                                         c.courses_dept = element["Subject"];
                                         c.courses_id = element["Course"];
@@ -178,6 +178,9 @@ export default class InsightFacade implements IInsightFacade {
                                         c.courses_fail = element["Fail"];
                                         c.courses_audit = element["Audit"];
                                         c.courses_uuid = element["id"].toString();
+                                        c.courses_year = (element["Section"] === "overall")
+                                            ? 1900 : Number(element["Year"]);
+                                        // Log.trace(c.courses_year.toString());
                                         if (c.courses_dept !== undefined &&
                                             c.courses_id !== undefined &&
                                             c.courses_avg !== undefined &&
