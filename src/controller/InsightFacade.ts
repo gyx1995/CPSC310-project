@@ -53,7 +53,7 @@ export default class InsightFacade implements IInsightFacade {
         // Log.trace("addDataset");
         return new Promise<InsightResponse>((resolve, reject) => {
             // Log.trace("beforeUnzip");
-            that.unzip(content, id).then((ok) => {
+            that.unzip(content, id, kind).then((ok) => {
                 if (ok) {
                     // Log.trace("1");
                     resolve({code: 204, body: {result: ""}});
@@ -139,7 +139,7 @@ export default class InsightFacade implements IInsightFacade {
         delete this.datasets[id];
     }
 
-    private unzip(content: string, id: string): Promise<boolean> {
+    private unzip(content: string, id: string, kind: InsightDatasetKind): Promise<boolean> {
         // Log.trace("enterUnzip");
         const that = this;
         const myZip = new JSZip();
@@ -149,7 +149,7 @@ export default class InsightFacade implements IInsightFacade {
         return myZip.loadAsync(content, {base64: true})
             .then(function (zip: JSZip) {
                 // Log.trace("enterLoadAsync");
-                if (id === "courses") {
+                if (kind === "courses") {
                     // Log.trace(zip.toString());
                     const parray = Array() as any[];
                     const array = Array() as any[];
@@ -236,7 +236,7 @@ export default class InsightFacade implements IInsightFacade {
                             return false;
                         });
                     // return true;
-                } else if (id === "rooms") {
+                } else if (kind === "rooms") {
                     Log.trace("enter room");
                     const roomList = new Array() as any;
                     return zip.file("index.htm").async("text").then(function (indexData) {
