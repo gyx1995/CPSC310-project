@@ -89,19 +89,27 @@ export default class InsightFacade implements IInsightFacade {
         // this.loadData();
         ///////////////
         /////////////////////////
-        // const doQuery = new DoQuery(this);
-        const that = this;
+        // const col = query["OPTIONS"]["COLUMNS"];
+        // Log.trace("1");
+        // const col1 = col[0];
+        // Log.trace("2");
+        // Log.trace(col1);
+        // const index = col1.indexof("_");
+        // const id = col1.substring(0, index);
+        // Log.trace("this is the " + id + "！！！！！！");
+        const doQuery = new DoQuery(this);
+        // const that = this;
         ////////////////////////
         Log.trace("1");
         return new Promise(function (fulfill, reject) {
             try {
                 Log.trace("2");
-                const isValid = that.isValid(query);
+                const isValid = doQuery.isValid(query);
+                Log.trace("valid Query");
                 Log.trace("3");
                 if (isValid === 200) {
                     Log.trace("4");
-                    that.query(query).then(function (result) {
-                        Log.trace("valid");
+                    doQuery.query(query).then(function (result) {
                         fulfill({code: 200, body: {result}});
                     }).catch(function (err) {
                         reject({code: 400, body: {error: err}});

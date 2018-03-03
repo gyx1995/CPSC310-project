@@ -18,7 +18,6 @@
     "response": {
         "code": 400,
         "body": {
-            "error": "Invalid query: IS value should be a string"
         }
     }
 }
