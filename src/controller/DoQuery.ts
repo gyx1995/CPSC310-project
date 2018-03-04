@@ -1,4 +1,4 @@
-import * as decimal from "decimal.js";
+import {Decimal} from "decimal.js";
 import fs = require("fs");
 import {isNumber, isString} from "util";
 import Log from "../Util";
@@ -118,7 +118,7 @@ export default class DoQuery {
         let transResult: any = [];
         const finalResult: any = [];
         const group = trans["GROUP"];
-        const acc: any = [];
+        const acc: any[] = [];
         let count = 0;
         const groups: any = [];
         let conter: any = [];
@@ -152,7 +152,11 @@ export default class DoQuery {
                 const applyKey = Object.keys(a)[0];
                 const applyValue = Object.values(a)[0];
                 acc[acc.length - 1][applyKey] = 0;
-                if ("MIN" in applyValue) {
+                if ("AVG" in applyValue) {
+                    const k = Object.values(a)[0]["AVG"];
+                    const r = entry[k];
+                    acc[acc.length - 1][applyKey] = r;
+                } else if ("MIN" in applyValue) {
                     const k = Object.values(a)[0]["MIN"];
                     acc[acc.length - 1][applyKey] = entry[k];
                 } else if ("SUM" in applyValue) {
@@ -167,7 +171,7 @@ export default class DoQuery {
                     conter.push(entry[k].toString());
                 }
             }
-            count = 0;
+            count = 1;
         }
         function last_group() {
             for (const a of apply) {
@@ -175,7 +179,11 @@ export default class DoQuery {
                 const val = Object.values(a)[0];
                 if ("AVG" in val) {
                     // Log.trace("AVG IN APPLY");
-                    groups[groups.length - 1][appKey] = Number(((acc[groups.length - 1][appKey]) / count)
+                    // const aa = new Decimal(1.3);
+                    // aa.toNumber();
+                    const num = new Decimal(acc[groups.length - 1][appKey]).toNumber();
+                    Log.trace(num.toString());
+                    groups[groups.length - 1][appKey] = Number((num / new Decimal(count).toNumber())
                         .toFixed(2));
                 } else if ("SUM" in val) {
                     // Log.trace("SUM IN APPLY");
@@ -213,7 +221,7 @@ export default class DoQuery {
                     if ("AVG" in val) {
                         // Log.trace("AVG IN APPLY");
                         const k = Object.values(a)[0]["AVG"];
-                        const nu: any = new Decimal(Number(entry[k]));
+                        const nu: any = (entry[k]);
                         acc[groups.length - 1][applyKey] += nu;
                     } else if ("SUM" in val) {
                         const k = Object.values(a)[0]["SUM"];

@@ -213,10 +213,6 @@ export default class InsightFacade implements IInsightFacade {
                     });
                     return Promise.all(parray)
                         .then(function () {
-                            if (fs.existsSync("./test/unzipData/" + id)) {
-                                // Log.trace("exist");
-                                return false;
-                            }
                             // Log.trace("start writing");
                             // Log.trace(array.length.toString());
                             const exists = that.datasets[id] !== undefined ? true : false;
@@ -228,6 +224,11 @@ export default class InsightFacade implements IInsightFacade {
                                 // Log.trace(id);
                                 if (fs.existsSync("./test/unzipData")) {
                                     // Log.trace("UNZIP");
+                                    if (fs.existsSync("./test/unzipData/" + id + ".json")) {
+                                        // Log.trace("exist");
+                                        that.datasets[id].content = array;
+                                        return false;
+                                    }
                                     fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(array));
                                 } else {
                                     // Log.trace("unzip else");
@@ -332,10 +333,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         }
                         return Promise.all(parray).then(function () {
-                            if (fs.existsSync("./test/unzipData/" + id + ".json")) {
-                                // Log.trace("exist");
-                                return false;
-                            }
+
                             // Log.trace("start writing");
                             // Log.trace(array.length.toString());
                             const exists = that.datasets[id] !== undefined ? true : false;
@@ -347,6 +345,12 @@ export default class InsightFacade implements IInsightFacade {
                                 // Log.trace(id);
                                 if (fs.existsSync("./test/unzipData")) {
                                     // Log.trace("UNZIP");
+                                    if (fs.existsSync("./test/unzipData/" + id + ".json")) {
+                                        // Log.trace("exist");
+                                        // return false;
+                                        that.datasets[id].content = roomList;
+                                        return false;
+                                    }
                                     fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(roomList));
                                 } else {
                                     // Log.trace("unzip else");
