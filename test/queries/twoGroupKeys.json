@@ -1,0 +1,40 @@
+{
+    "title": "(ROOM) valid transformation MIN and MAX with two group keys",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_type": "Small Group"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_type",
+                "rooms_seats",
+                "minSeats",
+                "maxSeats"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_type",
+                "rooms_seats"
+            ],
+            "APPLY": [
+                {
+                    "minSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                },
+                {
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"rooms_type":"Small Group","rooms_seats":26,"minSeats":26,"maxSeats":26},{"rooms_type":"Small Group","rooms_seats":33,"minSeats":33,"maxSeats":33},{"rooms_type":"Small Group","rooms_seats":37,"minSeats":37,"maxSeats":37},{"rooms_type":"Small Group","rooms_seats":20,"minSeats":20,"maxSeats":20},{"rooms_type":"Small Group","rooms_seats":21,"minSeats":21,"maxSeats":21},{"rooms_type":"Small Group","rooms_seats":16,"minSeats":16,"maxSeats":16},{"rooms_type":"Small Group","rooms_seats":22,"minSeats":22,"maxSeats":22},{"rooms_type":"Small Group","rooms_seats":32,"minSeats":32,"maxSeats":32},{"rooms_type":"Small Group","rooms_seats":18,"minSeats":18,"maxSeats":18},{"rooms_type":"Small Group","rooms_seats":24,"minSeats":24,"maxSeats":24},{"rooms_type":"Small Group","rooms_seats":30,"minSeats":30,"maxSeats":30},{"rooms_type":"Small Group","rooms_seats":31,"minSeats":31,"maxSeats":31},{"rooms_type":"Small Group","rooms_seats":12,"minSeats":12,"maxSeats":12},{"rooms_type":"Small Group","rooms_seats":28,"minSeats":28,"maxSeats":28},{"rooms_type":"Small Group","rooms_seats":27,"minSeats":27,"maxSeats":27},{"rooms_type":"Small Group","rooms_seats":36,"minSeats":36,"maxSeats":36},{"rooms_type":"Small Group","rooms_seats":44,"minSeats":44,"maxSeats":44},{"rooms_type":"Small Group","rooms_seats":35,"minSeats":35,"maxSeats":35},{"rooms_type":"Small Group","rooms_seats":39,"minSeats":39,"maxSeats":39},{"rooms_type":"Small Group","rooms_seats":40,"minSeats":40,"maxSeats":40},{"rooms_type":"Small Group","rooms_seats":8,"minSeats":8,"maxSeats":8},{"rooms_type":"Small Group","rooms_seats":10,"minSeats":10,"maxSeats":10},{"rooms_type":"Small Group","rooms_seats":6,"minSeats":6,"maxSeats":6},{"rooms_type":"Small Group","rooms_seats":60,"minSeats":60,"maxSeats":60},{"rooms_type":"Small Group","rooms_seats":25,"minSeats":25,"maxSeats":25},{"rooms_type":"Small Group","rooms_seats":38,"minSeats":38,"maxSeats":38},{"rooms_type":"Small Group","rooms_seats":34,"minSeats":34,"maxSeats":34},{"rooms_type":"Small Group","rooms_seats":7,"minSeats":7,"maxSeats":7},{"rooms_type":"Small Group","rooms_seats":14,"minSeats":14,"maxSeats":14}]}
+    }
+}
