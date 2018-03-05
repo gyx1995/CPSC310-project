@@ -1,0 +1,33 @@
+{
+    "title": "(ROOM) valid transformation SUM",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_address": "*Agronomy*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_address",
+                "sumSeats"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_address"
+            ],
+            "APPLY": [
+                {
+                    "sumSeats": {
+                        "SUM": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"rooms_address":"6245 Agronomy Road V6T 1Z4","sumSeats":440},
+            {"rooms_address":"6363 Agronomy Road","sumSeats":662}]}
+    }
+}

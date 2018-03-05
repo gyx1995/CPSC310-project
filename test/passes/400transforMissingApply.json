@@ -1,0 +1,29 @@
+{
+    "title": "Transformations needs to contains both GROUP and APPLY (400)",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "rooms_seats": 290
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "rooms_fullname",
+                "rooms_furniture",
+                "minSeats"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_shortname",
+                "rooms_fullname",
+                "rooms_furniture"
+            ]
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {}
+    }
+}

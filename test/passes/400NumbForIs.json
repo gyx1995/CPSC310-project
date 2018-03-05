@@ -1,0 +1,22 @@
+{
+    "title": "test a number by IS",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_avg":97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {"error":"Invalid query: IS value should be a string"}
+    }
+}

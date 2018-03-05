@@ -1,0 +1,38 @@
+{
+    "title": "All COLUMNS keys need to be either in GROUP or in APPLY (400)",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_type": "Small Group"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_type",
+                "minSeats",
+                "rooms_address"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_type"
+            ],
+            "APPLY": [
+                {
+                    "minSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                },
+                {
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {}
+    }
+}

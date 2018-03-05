@@ -1,0 +1,39 @@
+{
+    "title": "All COLUMNS keys need to be either in GROUP or in APPLY (400)",
+    "query": {
+        "WHERE": {
+            "AND": [{
+                "IS": {
+                    "rooms_furniture": "*Tables*"
+                }
+            }, {
+                "GT": {
+                    "rooms_seats": 300
+                }
+            }]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "maxSeats",
+                "rooms_furniture"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": ["maxSeats"]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": ["rooms_shortname"],
+            "APPLY": [{
+                "maxSeats": {
+                    "MAX": "rooms_seats"
+                }
+            }]
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {}
+    }
+}

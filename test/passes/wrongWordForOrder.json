@@ -1,0 +1,27 @@
+{
+    "title": "Something Strange in OPTIONS and column is empty",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_pass": 2500
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg",
+                "courses_uuid",
+                "courses_instructor",
+                "courses_pass"
+            ],
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {
+            "result": [{"courses_dept":"engl","courses_avg":71.91,"courses_uuid":"41461","courses_instructor":"","courses_pass":2994},{"courses_dept":"engl","courses_avg":72.91,"courses_uuid":"42865","courses_instructor":"","courses_pass":2698},{"courses_dept":"engl","courses_avg":73.17,"courses_uuid":"64334","courses_instructor":"","courses_pass":2655},{"courses_dept":"engl","courses_avg":71.71,"courses_uuid":"95219","courses_instructor":"","courses_pass":2557},{"courses_dept":"engl","courses_avg":71.51,"courses_uuid":"97419","courses_instructor":"","courses_pass":2502}]
+        }
+    }
+}
+

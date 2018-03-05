@@ -155,17 +155,20 @@ export default class DoQuery {
                 acc[acc.length - 1][applyKey] = 0;
                 if ("AVG" in applyValue) {
                     const k = Object.values(a)[0]["AVG"];
-                    const r = entry[k];
+                    const r = +entry[k];
                     acc[acc.length - 1][applyKey] = r;
                 } else if ("MIN" in applyValue) {
                     const k = Object.values(a)[0]["MIN"];
-                    acc[acc.length - 1][applyKey] = entry[k];
+                    const r = +entry[k];
+                    acc[acc.length - 1][applyKey] = r;
                 } else if ("SUM" in applyValue) {
                     const k = Object.values(a)[0]["SUM"];
-                    acc[acc.length - 1][applyKey] = entry[k];
+                    const r = +entry[k];
+                    acc[acc.length - 1][applyKey] = r;
                 } else if ("MAX" in applyValue) {
                     const k = Object.values(a)[0]["MAX"];
-                    acc[acc.length - 1][applyKey] = entry[k];
+                    const r = +entry[k];
+                    acc[acc.length - 1][applyKey] = r;
                 } else {
                     conter = [];
                     const k = Object.values(a)[0]["COUNT"];
@@ -222,15 +225,16 @@ export default class DoQuery {
                     if ("AVG" in val) {
                         // Log.trace("AVG IN APPLY");
                         const k = Object.values(a)[0]["AVG"];
-                        const nu: any = (entry[k]);
+                        const nu: any = +entry[k];
                         acc[groups.length - 1][applyKey] += nu;
                     } else if ("SUM" in val) {
                         const k = Object.values(a)[0]["SUM"];
-                        acc[groups.length - 1][applyKey] += entry[k];
+                        const nu: any = +entry[k];
+                        acc[groups.length - 1][applyKey] += nu;
                         // Log.trace("SUM IN APPLY");
                     }  else if ("MAX" in val) {
                         const k = Object.values(a)[0]["MAX"];
-                        const num = entry[k];
+                        const num = +entry[k];
                         if ( num > acc[groups.length - 1][applyKey]) {
                             acc[groups.length - 1][applyKey] = num;
                         }
@@ -238,8 +242,9 @@ export default class DoQuery {
                     } else if ("MIN" in val) {
                         const k = Object.values(a)[0]["MIN"];
                         // Log.trace("see the MIN " + entry[k]);
-                        if ( entry[k] < acc[groups.length - 1][applyKey]) {
-                            acc[groups.length - 1][applyKey] = entry[k];
+                        const nu: any = +entry[k];
+                        if ( nu < acc[groups.length - 1][applyKey]) {
+                            acc[groups.length - 1][applyKey] = nu;
                         }
                     } else {
                         const k = Object.values(a)[0]["COUNT"];
@@ -254,7 +259,7 @@ export default class DoQuery {
                 last_group();
             }
         }
-        Log.trace("stop here Let me see");
+        // Log.trace("stop here Let me see");
         for (const r of groups) {
             const o: any = {};
             // for every columns, add key-value to o.

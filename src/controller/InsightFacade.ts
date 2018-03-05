@@ -288,7 +288,7 @@ export default class InsightFacade implements IInsightFacade {
                                                         // Log.trace();
                                                         const url: string = roomNoTag.attrs[0].value.trim();
                                                         const roomName: string = shortName + " " + roomNo;
-                                                        const seats: number = helper.findDoc(c, "td", "class",
+                                                        const seats: number = +helper.findDoc(c, "td", "class",
                                                             "views-field views-field-field-room-capacity").
                                                             childNodes[0].value.trim();
                                                         const roomTypes: string = helper.findDoc(c, "td", "class",

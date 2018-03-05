@@ -1,0 +1,23 @@
+{
+    "title": "Ioption's format is wrong",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg":97
+            }
+        },
+        "OPTIONS": {
+            "COLMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {"error":"IOptions format is wrong"}
+    }
+}
+

@@ -1,0 +1,33 @@
+{
+    "title": "cannot find the equal string",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_id": "100"
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_dept": "ls"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {
+            "result": []
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "title": "(COURSES) valid transformation COUNT",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "*th*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "number"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept"
+            ],
+            "APPLY": [
+                {
+                    "number": {
+                        "COUNT": "courses_avg"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"courses_dept":"anth","number":150},{"courses_dept":"arth","number":224},{"courses_dept":"math","number":1379},{"courses_dept":"path","number":217},{"courses_dept":"pcth","number":88},{"courses_dept":"phth","number":60},{"courses_dept":"thtr","number":201}]}
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "title": "(COURSES) valid transformation Min",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "*th*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "number"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept"
+            ],
+            "APPLY": [
+                {
+                    "number": {
+                        "MIN": "courses_avg"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"courses_dept":"anth","number":60.05},{"courses_dept":"arth","number":66.38},{"courses_dept":"math","number":46.52},{"courses_dept":"path","number":73.47},{"courses_dept":"pcth","number":62.33},{"courses_dept":"phth","number":81.32},{"courses_dept":"thtr","number":63.78}]}
+    }
+}
