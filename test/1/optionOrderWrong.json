@@ -1,0 +1,38 @@
+{
+    "title": "Options order not valid (400)",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_address": "*Agronomy*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_address",
+                "sumSeats"
+            ],
+            "ORDER": {
+                "keys": [
+                    "sumSeats"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_address",
+                "rooms_hihi"
+            ],
+            "APPLY": [
+                {
+                    "sumSeats": {
+                        "SUM": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 400,
+        "body": {}
+    }
+}

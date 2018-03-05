@@ -1,3 +1,4 @@
+
 import { expect } from "chai";
 
 import { InsightDatasetKind, InsightResponse, InsightResponseSuccessBody } from "../src/controller/IInsightFacade";
@@ -19,6 +20,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
     // automatically be loaded in the Before All hook.
     const datasetsToLoad: { [id: string]: string } = {
         courses: "./test/data/courses.zip",
+        rooms: "./test/data/rooms.zip",
     };
 
     let insightFacade: InsightFacade;
@@ -62,7 +64,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         Log.test(`AfterTest: ${this.currentTest.title}`);
     });
 
-    it("Should add a valid dataset", async () => {
+    it("Should add a valid Courses dataset", async () => {
         const id: string = "courses";
         const expectedCode: number = 204;
         let response: InsightResponse;
@@ -70,6 +72,50 @@ describe("InsightFacade Add/Remove Dataset", function () {
         try {
             response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
             // insightFacade.performQuery({});
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+        }
+    });
+
+    it("Should add a valid dataset", async () => {
+        const id: string = "rooms";
+        const expectedCode: number = 204;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Rooms);
+            // insightFacade.performQuery({});
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+        }
+    });
+
+    it("Should add a valid dataset again", async () => {
+        const id: string = "rooms";
+        const expectedCode: number = 400;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Rooms);
+            // insightFacade.performQuery({});
+        } catch (err) {
+            response = err;
+        } finally {
+            expect(response.code).to.equal(expectedCode);
+        }
+    });
+
+    it("should remove a valid room dataset", async () => {
+        const id: string = "rooms";
+        const expectedCode: number = 204;
+        let response: InsightResponse;
+
+        try {
+            response = await insightFacade.removeDataset(id);
         } catch (err) {
             response = err;
         } finally {
@@ -119,7 +165,6 @@ describe("InsightFacade Add/Remove Dataset", function () {
     //         }
     //     });
     // });
-
     // This is an example of a pending test. Add a callback function to make the test run.
     it("wrong zip dataset", async () => {
         const id: string = "wrong";
@@ -219,21 +264,21 @@ describe("InsightFacade Add/Remove Dataset", function () {
             expect(response.code).to.equal(expectedCode);
         }
     });
-
-    it("Should add a valid dataset", async () => {
-        const id: string = "courses";
-        const expectedCode: number = 204;
-        let response: InsightResponse;
-
-        try {
-            response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
-            // insightFacade.performQuery({});
-        } catch (err) {
-            response = err;
-        } finally {
-            expect(response.code).to.equal(expectedCode);
-        }
-    });
+    //
+    // it("Should add a valid dataset", async () => {
+    //     const id: string = "courses";
+    //     const expectedCode: number = 204;
+    //     let response: InsightResponse;
+    //
+    //     try {
+    //         response = await insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
+    //         // insightFacade.performQuery({});
+    //     } catch (err) {
+    //         response = err;
+    //     } finally {
+    //         expect(response.code).to.equal(expectedCode);
+    //     }
+    // });
 });
 
 // This test suite dynamically generates tests from the JSON files in test/queries.
@@ -245,7 +290,7 @@ describe("InsightFacade PerformQuery", () => {
     };
     let insightFacade: InsightFacade;
     let testQueries: ITestQuery[] = [];
-    // Log.trace("hi!!!yoyo");
+    Log.trace("hi");
     // Create a new instance of InsightFacade, read in the test queries from test/queries and
     // add the datasets specified in datasetsToQuery.
     before(async function () {
@@ -288,7 +333,6 @@ describe("InsightFacade PerformQuery", () => {
                 } else if (id === "courses") {
                     responsePromises.push(insightFacade.addDataset(id, content, InsightDatasetKind.Courses));
                 }
-                Log.trace("what's up");
             }
 
             // This try/catch is a hack to let your dynamic tests execute enough the addDataset method fails.
@@ -344,3 +388,10 @@ describe("InsightFacade PerformQuery", () => {
         });
     });
 });
+
+/////////////////////
+// if (id === "rooms") {
+//     responsePromises.push(insightFacade.addDataset(id, content, InsightDatasetKind.Rooms));
+// } else if (id === "courses") {
+//     responsePromises.push(insightFacade.addDataset(id, content, InsightDatasetKind.Courses));
+// }

@@ -229,8 +229,9 @@ export default class DoQuery {
                         // Log.trace("SUM IN APPLY");
                     }  else if ("MAX" in val) {
                         const k = Object.values(a)[0]["MAX"];
-                        if ( entry[k] > acc[groups.length - 1][applyKey]) {
-                            acc[groups.length - 1][applyKey] = entry[k];
+                        const num = entry[k];
+                        if ( num > acc[groups.length - 1][applyKey]) {
+                            acc[groups.length - 1][applyKey] = num;
                         }
                         // Log.trace("MAX IN APPLY");
                     } else if ("MIN" in val) {

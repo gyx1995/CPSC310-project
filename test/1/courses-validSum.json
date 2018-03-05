@@ -1,0 +1,38 @@
+{
+    "title": "(COURSES) valid transformation SUM",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "*th*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "sumAvg"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept"
+            ],
+            "APPLY": [
+                {
+                    "sumAvg": {
+                        "SUM": "courses_avg"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"courses_dept":"anth","sumAvg":21637.01},
+            {"courses_dept":"arth","sumAvg":32937.45},
+            {"courses_dept":"math","sumAvg":199657.15},
+            {"courses_dept":"path","sumAvg":38697.23},
+            {"courses_dept":"pcth","sumAvg":16055.9},
+            {"courses_dept":"phth","sumAvg":10564.04},
+            {"courses_dept":"thtr","sumAvg":44548.53}]}
+    }
+}

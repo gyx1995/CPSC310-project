@@ -218,6 +218,7 @@ export default class InsightFacade implements IInsightFacade {
                             const exists = that.datasets[id] !== undefined ? true : false;
                             if (exists === true) {
                                 //  Log.trace("exist in datasets");
+                                // that.datasets[id].content = array;
                                 return false;
                             } else {
                                 that.datasets[id] = {kind: InsightDatasetKind.Courses, content: []};
@@ -333,12 +334,12 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         }
                         return Promise.all(parray).then(function () {
-
                             // Log.trace("start writing");
                             // Log.trace(array.length.toString());
                             const exists = that.datasets[id] !== undefined ? true : false;
                             if (exists === true) {
                                 //  Log.trace("exist in datasets");
+                                // that.datasets[id].content = roomList;
                                 return false;
                             } else {
                                 that.datasets[id] = {kind: InsightDatasetKind.Rooms, content: []};

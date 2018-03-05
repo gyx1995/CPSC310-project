@@ -1,0 +1,32 @@
+{
+    "title": "(ROOM) valid transformation COUNT",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_fullname": "Hugh Dempster Pavilion"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_address",
+                "number of rooms"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_address"
+            ],
+            "APPLY": [
+                {
+                    "number of rooms": {
+                        "COUNT": "rooms_name"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"rooms_address":"6245 Agronomy Road V6T 1Z4","number of rooms":5}]}
+    }
+}
