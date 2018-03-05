@@ -134,7 +134,8 @@ export default class DoQuery {
         // separate the result into group
         transResult = rawResult.sort(that.make_sort_function(group, 1));
         // Log.trace("see the transResult: " + rawResult);
-        // Log.trace("split Down: " + transResult.length);
+        // Log.trace("split Down:
+        // " + transResult.length);
         // transResult = that.doApply(transResult, apply);
         // compute according to Apply
         // Order the result;
@@ -297,19 +298,17 @@ export default class DoQuery {
     public make_sort_function (groupKey: string[], up: number) {
         const that = this;
         return function ( a: any, b: any) {
-            const epsilon = 0.001;
             for (const i of groupKey) {
                 let x: any;
                 let y: any;
-                if (i in that.courseSkey || i in that.roomSkey) {
+                if ( that.courseSkey.indexOf(i) !== - 1 || that.roomSkey.indexOf(i) !== -1) {
                     x = a[i];
                     y = b[i];
+                    // Log.trace(x + " " + y);
                 } else { // order is Number case
                     x = Number(a[i]);
                     y = Number(b[i]);
-                    if (Math.abs(x - y) < epsilon) {
-                        continue;
-                    }
+                    // Log.trace(x + " " + y);
                 }
                 if (x < y) {
                     return -1 * up;
