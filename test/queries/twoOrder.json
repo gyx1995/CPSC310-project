@@ -1,0 +1,88 @@
+{
+    "title": "(ROOM) valid transformation two Orders",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "rooms_seats": 299
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_type",
+                "rooms_seats",
+                "minSeats",
+                "maxSeats"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "rooms_seats",
+                    "rooms_type"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_type",
+                "rooms_seats"
+            ],
+            "APPLY": [
+                {
+                    "minSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                },
+                {
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {
+            "result": [
+                {
+                    "rooms_type": "Tiered Large Group",
+                    "rooms_seats": 325,
+                    "minSeats": 325,
+                    "maxSeats": 325
+                },
+                {
+                    "rooms_type": "Tiered Large Group",
+                    "rooms_seats": 350,
+                    "minSeats": 350,
+                    "maxSeats": 350
+                },
+                {
+                    "rooms_type": "Tiered Large Group",
+                    "rooms_seats": 375,
+                    "minSeats": 375,
+                    "maxSeats": 375
+                },
+                {
+                    "rooms_type": "Tiered Large Group",
+                    "rooms_seats": 426,
+                    "minSeats": 426,
+                    "maxSeats": 426
+                },
+                {
+                    "rooms_type": "Open Design General Purpose",
+                    "rooms_seats": 442,
+                    "minSeats": 442,
+                    "maxSeats": 442
+                },
+                {
+                    "rooms_type": "Tiered Large Group",
+                    "rooms_seats": 503,
+                    "minSeats": 503,
+                    "maxSeats": 503
+                }
+            ]
+        }
+    }
+}
+
+

@@ -1,0 +1,33 @@
+{
+    "title": "(ROOM) valid transformation COUNT",
+    "query": {
+        "WHERE": {
+            "EQ": {
+                "rooms_lat": 49.26125
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "number of rooms"
+            ]
+        },
+
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_shortname"
+            ],
+            "APPLY": [
+                {
+                    "number of rooms": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"rooms_shortname":"DMP","number of rooms":160}]}
+    }
+}

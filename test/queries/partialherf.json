@@ -1,0 +1,37 @@
+{
+    "title": "(ROOM) valid transformation COUNT",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "rooms_href": "*ALRD*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_href",
+                "number of rooms"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "rooms_href"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_href"
+            ],
+            "APPLY": [
+                {
+                    "number of rooms": {
+                        "COUNT": "rooms_name"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"rooms_href":"http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ALRD-B101","number of rooms":1},{"rooms_href":"http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ALRD-121","number of rooms":1},{"rooms_href":"http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ALRD-113","number of rooms":1},{"rooms_href":"http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ALRD-112","number of rooms":1},{"rooms_href":"http://students.ubc.ca/campus/discover/buildings-and-classrooms/room/ALRD-105","number of rooms":1}]}}
+}

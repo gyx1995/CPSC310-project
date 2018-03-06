@@ -1,0 +1,40 @@
+{
+    "title": "(ROOM) valid transformation COUNT",
+    "query": {
+        "WHERE": {
+            "EQ": {
+                "rooms_lat": 49.26125
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_address",
+                "number of rooms",
+                "rooms_seats"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "rooms_seats"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_address",
+                "rooms_seats"
+            ],
+            "APPLY": [
+                {
+                    "number of rooms": {
+                        "COUNT": "rooms_name"
+                    }
+                }
+            ]
+        }
+    },
+    "response": {
+        "code": 200,
+        "body": {"result":[{"rooms_address":"6245 Agronomy Road V6T 1Z4","rooms_seats":160,"number of rooms":1},{"rooms_address":"6245 Agronomy Road V6T 1Z4","rooms_seats":120,"number of rooms":1},{"rooms_address":"6245 Agronomy Road V6T 1Z4","rooms_seats":80,"number of rooms":1},{"rooms_address":"6245 Agronomy Road V6T 1Z4","rooms_seats":40,"number of rooms":2}]}
+    }
+}
