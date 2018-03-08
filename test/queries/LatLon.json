@@ -1,41 +1,40 @@
 {
-    "title": "checking the AND",
+    "title": "checking the LAT and LON",
     "query":{
         "WHERE": {
-            "AND": [
-                {
-                    "GT": {
-                        "courses_avg": 97
-                    }
-                },
-                {
-                    "IS": {
-                        "courses_dept": "math"
-                    }
-                }
-            ]
+            "IS": {
+                "rooms_href": "*ALRD*"
+            }
         },
         "OPTIONS": {
             "COLUMNS": [
-                "courses_dept",
-                "courses_avg"
+                "rooms_lat",
+                "rooms_lon",
+                "number of rooms"
             ],
-            "ORDER": "courses_avg",
-            "FORM": "TABLE"
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "rooms_lat"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_lat",
+                "rooms_lon"
+            ],
+            "APPLY": [
+                {
+                    "number of rooms": {
+                        "COUNT": "rooms_name"
+                    }
+                }
+            ]
         }
     },
     "response": {
         "code": 200,
-        "body": {
-            "result": [
-                {"courses_dept":"math","courses_avg":97.09},
-                {"courses_dept":"math","courses_avg":97.09},
-                {"courses_dept":"math","courses_avg":97.25},
-                {"courses_dept":"math","courses_avg":97.25},
-                {"courses_dept":"math","courses_avg":97.48},
-                {"courses_dept":"math","courses_avg":97.48},
-                {"courses_dept":"math","courses_avg":99.78},
-                {"courses_dept":"math","courses_avg":99.78}]
-        }
+        "body": {"result":[{"rooms_lat":49.2699,"rooms_lon":-123.25318,"number of rooms":5}]}
     }
 }

@@ -95,13 +95,13 @@ export default class DoQuery {
             }
             if ("ORDER" in options) {
                 const order = options["ORDER"];
-                const keys = order["keys"];
-                const dir = order["dir"];
                 if (typeof order !== "object") {
                     finalresult.sort(function (a: any, b: any) {
                         return a[order] - b[order];
                     });
                 } else {
+                    const keys = order["keys"];
+                    const dir = order["dir"];
                     let upOrDown: number = -1;
                     if (dir === "UP") {
                         upOrDown = 1;
@@ -131,7 +131,7 @@ export default class DoQuery {
         // Log.trace("apply: " + apply);
         // Log.trace("col: " + col);
         // Log.trace("groupLength: " + groupLength);
-        // separate the result into group
+        // sort the result into group
         transResult = rawResult.sort(that.make_sort_function(group, 1));
         // Log.trace("see the transResult: " + rawResult);
         // Log.trace("split Down:
@@ -307,10 +307,12 @@ export default class DoQuery {
                 let x: any;
                 let y: any;
                 if ( that.courseSkey.indexOf(i) !== - 1 || that.roomSkey.indexOf(i) !== -1) {
+                    // if the value is a string
                     x = a[i];
                     y = b[i];
                     // Log.trace(x + " " + y);
-                } else { // order is Number case
+                } else {
+                    // order is Number case
                     x = Number(a[i]);
                     y = Number(b[i]);
                     // Log.trace(x + " " + y);
@@ -321,8 +323,8 @@ export default class DoQuery {
                 if (x > y) {
                     return up;
                 }
+                return 0;
             }
-            return 0;
         };
     }
     // the return result are grouped
