@@ -1,3 +1,288 @@
 {
-    "query1": "simple query IS comparison for department with two columns and old order syntax"
+    "query1": {
+        "WHERE": {
+            "IS": {
+                "courses_dept": "cpsc"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "courses_id"
+                ]
+            }
+        }
+    },
+    "query2":{
+        "WHERE": {
+            "AND": [
+                {
+                    "GT": {
+                        "courses_avg": 97
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_dept": "math"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_avg",
+                "courses_dept"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "courses_avg"
+                ]
+            }
+        }
+    },
+    "query3":{
+        "WHERE": {
+            "AND": [
+                {
+                    "EQ": {
+                        "courses_fail": 22
+                    }
+                },
+                {
+                    "GT": {
+                        "courses_fail": 21
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_dept": "apbi"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_fail",
+                "courses_id"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "courses_dept"
+                ]
+            }
+        }
+    },
+    "query4":{
+        "WHERE": {
+            "IS": {
+                "courses_dept": "*th*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "number"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept"
+            ],
+            "APPLY": [
+                {
+                    "number": {
+                        "MIN": "courses_avg"
+                    }
+                }
+            ]
+        }
+    },
+    "query5":{
+        "WHERE": {
+            "GT": {
+                "courses_pass": 2500
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg",
+                "courses_uuid",
+                "courses_instructor",
+                "courses_pass"
+            ],
+            "FORM": "TABLE"
+        }
+    },
+    "query6":{
+        "WHERE": {
+            "IS": {
+                "rooms_type": "Small Group"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_type",
+                "minSeats",
+                "maxSeats"
+            ]
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_type"
+            ],
+            "APPLY": [
+                {
+                    "minSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                },
+                {
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "query7":{
+        "WHERE": {
+            "NOT":{
+                "NOT":
+                {
+                    "GT": {
+                        "courses_avg": 99
+                    }
+                }
+
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "query8":{
+        "WHERE": {
+            "OR": [
+                {
+                    "IS": {
+                        "courses_title": "forest ecology"
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_instructor": "loewen, philip"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ],
+            "ORDER": "courses_avg",
+            "FORM": "TABLE"
+        }
+    },
+    "query9":{
+        "WHERE": {
+            "OR": [
+                {
+                    "NOT": {
+                        "EQ": {
+                            "courses_avg": 1
+                        }
+                    }
+                },
+                {
+                    "IS": {
+                        "courses_dept": "cpsc"
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_audit",
+                "courses_avg",
+                "courses_id",
+                "courses_uuid"
+            ]
+        }
+    },
+    "query10":{
+        "WHERE": {
+            "NOT": {
+                "AND": [
+                    {
+                        "GT": {
+                            "courses_avg": 97
+                        }
+                    },
+                    {
+                        "IS": {
+                            "courses_dept": "*ps"
+                        }
+                    }
+                ]
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_avg",
+                "courses_dept"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "courses_dept"
+                ]
+            }
+        }
+    },
+    "query11":{
+        "WHERE": {
+            "GT": {
+                "rooms_lat": 49.26125
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "number of rooms"
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "number of rooms"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_shortname"
+            ],
+            "APPLY": [
+                {
+                    "number of rooms": {
+                        "MAX": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    }
 }

@@ -9,3 +9,7 @@
  */
 
 // TODO: implement!
+const submit_button =  document.getElementById("submit-button");
+submit_button.onclick = function() {CampusExplorer.buildQuery();}
+
+
