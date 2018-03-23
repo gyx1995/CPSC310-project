@@ -7,10 +7,10 @@
 CampusExplorer.sendQuery = function(query) {
     return new Promise(function(fulfill, reject) {
         //console.log("CampusExplorer.sendQuery not implemented yet.");
-        var httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = function() {
-            if (this.readyState === 4){
-                if (this.status === 200) {
+        let httpRequest = new XMLHttpRequest();
+        httpRequest.onload = function() {
+            if (this.readyState === 4) {
+                if (this.status === 200){
                     fulfill(this.responseText);
                 } else {
                     reject(this.responseText);
