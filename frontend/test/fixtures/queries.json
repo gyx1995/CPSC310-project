@@ -253,36 +253,5 @@
                 ]
             }
         }
-    },
-    "query11":{
-        "WHERE": {
-            "GT": {
-                "rooms_lat": 49.26125
-            }
-        },
-        "OPTIONS": {
-            "COLUMNS": [
-                "rooms_shortname",
-                "number of rooms"
-            ],
-            "ORDER": {
-                "dir": "UP",
-                "keys": [
-                    "number of rooms"
-                ]
-            }
-        },
-        "TRANSFORMATIONS": {
-            "GROUP": [
-                "rooms_shortname"
-            ],
-            "APPLY": [
-                {
-                    "number of rooms": {
-                        "MAX": "rooms_seats"
-                    }
-                }
-            ]
-        }
     }
 }

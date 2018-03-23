@@ -56,7 +56,8 @@ CampusExplorer.buildQuery = function() {
         query["TRANSFORMATIONS"]["GROUP"] = group_keys;
         query["TRANSFORMATIONS"]["APPLY"] = trans_re;
     }
-    window.alert(JSON.stringify(query));
+    // CampusExplorer.sendQuery(query);
+    // window.alert(JSON.stringify(query));
     return query;
 };
 function form_trans(id){
@@ -183,6 +184,9 @@ function form_where(id) {
         } else {
             final_cond = cond_array[0];
         }
+    }
+    if (count === 0){
+        final_cond = {};
     }
     return final_cond;
 }

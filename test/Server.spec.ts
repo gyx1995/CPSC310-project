@@ -24,7 +24,7 @@ describe("Facade D3", function () {
 
     after(function () {
         // TODO: stop server here once!
-        server.stop();
+        // server.stop();
     });
 
     beforeEach(function () {
@@ -74,6 +74,23 @@ describe("Facade D3", function () {
             expect.fail();
         }
     });
+    it("PUT test for rooms dataset", function () {
+        try {
+            return chai.request("http://localhost:4321")
+                .put("/dataset/rooms/rooms")
+                .attach("body", "./test/data/rooms.zip", "rooms.zip")
+                .then(function (res: any) {
+                    expect(res.status).to.be.equal(204);
+                })
+                .catch(function (err: Error) {
+                    expect.fail();
+                });
+        } catch (err) {
+            // and some more logging here!
+            Log.trace(err.toString());
+            expect.fail();
+        }
+    });
     it("POST a simple query", function () {
         try {
             return chai.request("http://localhost:4321")
@@ -107,21 +124,21 @@ describe("Facade D3", function () {
             expect.fail();
         }
     });
-    it("Delete test for courses dataset", function () {
-        try {
-            return chai.request("http://localhost:4321")
-                .del("/dataset/courses")
-                .then(function (res: any) {
-                    expect(res.status).to.be.equal(204);
-                })
-                .catch(function (err: Error) {
-                    expect.fail();
-                });
-        } catch (err) {
-            // and some more logging here!
-            Log.trace(err.toString());
-            expect.fail();
-        }
-    });
+    // it("Delete test for courses dataset", function () {
+    //     try {
+    //         return chai.request("http://localhost:4321")
+    //             .del("/dataset/courses")
+    //             .then(function (res: any) {
+    //                 expect(res.status).to.be.equal(204);
+    //             })
+    //             .catch(function (err: Error) {
+    //                 expect.fail();
+    //             });
+    //     } catch (err) {
+    //         // and some more logging here!
+    //         Log.trace(err.toString());
+    //         expect.fail();
+    //     }
+    // });
     // The other endpoints work similarly. You should be able to find all instructions at the chai-http documentation
 });

@@ -1,3 +1,12 @@
 {
-    "query1": "simple query IS comparison for department with two columns and old order syntax"
+    "query1": "simple query IS comparison for department with two columns and old order syntax",
+    "query2": "checking and",
+    "query3": "check AND with EQ GT IS",
+    "query4": "simple query with transformation",
+    "query5": "very simple query old order syntax",
+    "query6": "with transformation's 2 APPLY",
+    "query7": "Double negation",
+    "query8": "check OR",
+    "query9": "check OR with not",
+    "query10": "NOT with AND"
 }

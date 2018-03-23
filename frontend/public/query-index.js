@@ -10,6 +10,25 @@
 
 // TODO: implement!
 const submit_button =  document.getElementById("submit-button");
-submit_button.onclick = function() {CampusExplorer.buildQuery();}
+submit_button.onclick = function() {
+    var query = CampusExplorer.buildQuery();
+    CampusExplorer.sendQuery(query).then(function (result){
+        window.alert(result);
+        CampusExplorer.renderResult(JSON.parse(result));
+    }).catch(function (reason) {
+        window.alert("cannot send the query" + reason)
+    });
+};
 
 
+// var query  = CampusExplorer.buildQuery();
+// try {
+//     CampusExplorer.sendQuery(query).then(function (result){
+//         CampusExplorer.renderResult(result);
+//     }).catch(function (reason) {
+//         window.alert("cannot send the query" + reason)
+//     });
+// }
+// catch (err){
+//     window.alert("catch :" + err);
+// }
