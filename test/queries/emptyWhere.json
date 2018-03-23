@@ -2,23 +2,6 @@
     "title": "And with IS* and *diane",
     "query":{
         "WHERE": {
-            "AND": [{
-                "EQ": {
-                    "courses_fail": 1
-                }
-            },
-                {
-                    "IS": {
-                        "courses_instructor": "*diane"
-                    }
-                },
-                {
-                    "IS": {
-                        "courses_dept": "**"
-                    }
-                }
-
-            ]
         },
         "OPTIONS": {
             "COLUMNS": [
