@@ -7,8 +7,6 @@
  * 3.) Query object is sent to the POST /query endpoint using global XMLHttpRequest object (CampusExplorer.sendQuery)
  * 4.) Result is rendered in the reference UI by calling CampusExplorer.renderResult with the response from the endpoint as argument
  */
-
-// TODO: implement!
 const submit_button =  document.getElementById("submit-button");
 submit_button.onclick = function() {
     var query = CampusExplorer.buildQuery();

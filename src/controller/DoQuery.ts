@@ -39,14 +39,14 @@ export default class DoQuery {
         , "rooms_number", "rooms_name" , "rooms_address" , "rooms_type" , "rooms_furniture" , "rooms_href"];
     private roomNkey: any = ["rooms_lat" , "rooms_lon" , "rooms_seats"];
     constructor(facade: InsightFacade) {
-        Log.trace("0.0");
+        // Log.trace("0.0");
         this.insight = facade;
-        Log.trace("0.1");
+        // Log.trace("0.1");
         /////////////////////////////////////////////////
         // this.insight.addDataset("courses", this.datasetss["courses"], InsightDatasetKind.Courses);
         ////////////////////////////////////////////////
         // this.data = this.insight.getDataset("courses");
-        Log.trace("0.2");
+        // Log.trace("0.2");
         // this.array = this.data;
     }
     public query(query: IQueryRequest): Promise<any> {
@@ -901,9 +901,9 @@ export default class DoQuery {
         return ans;
     }
     public select(result: any, option: any): any {
-        Log.trace("333");
+        // Log.trace("333");
         const col = option["COLUMNS"];
-        Log.trace(col.length);
+        // Log.trace(col.length);
         const final: any = [];
         for (const r of result) {
             const o: any = {};

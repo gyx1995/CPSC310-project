@@ -42,9 +42,9 @@ export default class InsightFacade implements IInsightFacade {
     public getDataset(id: string): any {
         // const that = this;
         const that = this;
-        Log.trace("1000");
+        // Log.trace("1000");
         // Log.trace(that.datasets["rooms"].content[0].courses_title);
-        Log.trace("hi");
+        // Log.trace("hi");
         return that.datasets[id].content;
     }
 
@@ -66,25 +66,25 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<InsightResponse> {
-        Log.trace("start remove");
+       // Log.trace("start remove");
         this.deleteArray(id);
-        Log.trace("array cleared");
+        // Log.trace("array cleared");
         return new Promise(function (resolve, reject) {
             Log.trace("promise");
             fs.unlink("./test/unzipData/" + id + ".json", (err) => {
                 if (err) {
                     reject({code: 404, body: {result: ""}});
-                    Log.trace("data no found");
+                    // Log.trace("data no found");
                 } else {
                     resolve({code: 204, body: {error: "my text"}});
-                    Log.trace("delete successfully");
+                    // Log.trace("delete successfully");
                 }
             });
         });
     }
 
     public performQuery(query: any): Promise<InsightResponse> {
-        Log.trace("0");
+       //  Log.trace("0");
         ////////////////
         // this.loadData();
         ///////////////
@@ -100,23 +100,23 @@ export default class InsightFacade implements IInsightFacade {
         const doQuery = new DoQuery(this);
         // const that = this;
         ////////////////////////
-        Log.trace("1");
+        // Log.trace("1");
         return new Promise(function (fulfill, reject) {
             try {
-                Log.trace("2");
+                // Log.trace("2");
                 const isValid = doQuery.isValid(query);
-                Log.trace("valid Query");
-                Log.trace("3");
+                // Log.trace("valid Query");
+                // Log.trace("3");
                 if (isValid === 200) {
-                    Log.trace("4");
+                    // Log.trace("4");
                     doQuery.query(query).then(function (result) {
                         fulfill({code: 200, body: {result}});
                     }).catch(function (err) {
                         reject({code: 400, body: {error: err}});
                     });
                 } else {
-                    Log.trace("5");
-                    Log.trace(" else invalid");
+                    // Log.trace("5");
+                    // Log.trace(" else invalid");
                     reject({code: 400, body: {error: "invalid 400 query"}});
                 }
             } catch (err) {
@@ -247,7 +247,7 @@ export default class InsightFacade implements IInsightFacade {
                         });
                     // return true;
                 } else if (kind === "rooms") {
-                    Log.trace("enter room");
+                    // Log.trace("enter room");
                     const roomList = new Array() as any;
                     return zip.file("index.htm").async("text").then(function (indexData) {
                         const doc: any = parse5.parse(indexData);
@@ -320,14 +320,14 @@ export default class InsightFacade implements IInsightFacade {
                                                     // Log.trace(furniure.childNodes[0].value.trim());
                                                 }
                                             }).catch(function (err) {
-                                                Log.trace(err.toString());
+                                                // Log.trace(err.toString());
                                             });
                                         // Log.trace(address.childNodes[0].value);
                                         // Log.trace(roomTypes.childNodes[0].value.trim());
                                         // Log.trace(seats.childNodes[0].value.trim());
                                         // Log.trace(fullName.childNodes[0].value);
                                     }).catch(function (err) {
-                                        Log.trace(err.toString());
+                                        // Log.trace(err.toString());
                                     });
                                 };
                                 parray.push(p());
@@ -358,10 +358,10 @@ export default class InsightFacade implements IInsightFacade {
                                     fs.mkdirSync("./test/unzipData/");
                                     fs.writeFileSync("./test/unzipData/" + id + ".json", JSON.stringify(roomList));
                                 }
-                                Log.trace("see the roomList: " + roomList.length);
+                                // Log.trace("see the roomList: " + roomList.length);
                                 that.datasets[id].content = roomList;
                                 // Log.trace(that.datasets["courses"].content[0].courses_title);
-                                Log.trace("file wrote");
+                                // Log.trace("file wrote");
                                 return true;
                             }
                         }).catch(function (err) {
