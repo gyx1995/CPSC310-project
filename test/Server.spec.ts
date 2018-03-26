@@ -124,21 +124,21 @@ describe("Facade D3", function () {
             expect.fail();
         }
     });
-    // it("Delete test for courses dataset", function () {
-    //     try {
-    //         return chai.request("http://localhost:4321")
-    //             .del("/dataset/courses")
-    //             .then(function (res: any) {
-    //                 expect(res.status).to.be.equal(204);
-    //             })
-    //             .catch(function (err: Error) {
-    //                 expect.fail();
-    //             });
-    //     } catch (err) {
-    //         // and some more logging here!
-    //         Log.trace(err.toString());
-    //         expect.fail();
-    //     }
-    // });
+    it("Delete test for courses dataset", function () {
+        try {
+            return chai.request("http://localhost:4321")
+                .del("/dataset/courses")
+                .then(function (res: any) {
+                    expect(res.status).to.be.equal(204);
+                })
+                .catch(function (err: Error) {
+                    expect.fail();
+                });
+        } catch (err) {
+            // and some more logging here!
+            Log.trace(err.toString());
+            expect.fail();
+        }
+    });
     // The other endpoints work similarly. You should be able to find all instructions at the chai-http documentation
 });
