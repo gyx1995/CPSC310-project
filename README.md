@@ -1,3 +1,8 @@
+## description
+
+This project can read JSON-Format data from zip files(You can find two instances from test->data).We use these two zip files as the databases. Users can use this project to search rooms, instructors, courses and buildings information.
+
+
 ## Configuring your environment
 
 To start using this project, you need to get your computer configured so you can build and execute the code. To do this, follow these steps; the specifics of each step (especially the first two) will vary based on which operating system your computer has:
