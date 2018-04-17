@@ -1,9 +1,3 @@
-# CPSC 310 D0 Repository
-
-This is the base repository for CPSC310 Deliverable 0. This is an individual deliverable. Please keep your repository private.
-
-Piazza is your best resource for additional details about the [project](https://github.com/ubccpsc/310/blob/2018jan/project/README.md), [AutoTest](https://github.com/ubccpsc/310/blob/2018jan/project/AutoTest.md), and the specific requirements of each project deliverable. These resources will be frequently updated as the term progresses.
-
 ## Configuring your environment
 
 To start using this project, you need to get your computer configured so you can build and execute the code. To do this, follow these steps; the specifics of each step (especially the first two) will vary based on which operating system your computer has:
