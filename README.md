@@ -13,7 +13,7 @@ To start using this project, you need to get your computer configured so you can
 
 1. [Install Yarn](https://yarnpkg.com/en/docs/install). You should be able to execute `yarn --version` afterwards.
 
-1. Clone the project: `CPSC310-2017W-T2/cpsc310_d0_teamXXX` (where `XXX` is your team ID). You can find your team ID and clone the repo by visiting your project in GitHub and getting the clone target by clicking on the green button on your project repository.
+1. Clone the project
 
 ## Project commands
 
