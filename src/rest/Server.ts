@@ -1,5 +1,5 @@
 /**
- * Created by rtholmes on 2016-06-19.
+ * Created by rtholmes on 2016-06-19, adjusted and modified by Colin and Guanyu 
  */
 
 import fs = require("fs");
